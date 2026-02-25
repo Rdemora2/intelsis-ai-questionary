@@ -102,31 +102,89 @@ export const AREA_OPTIONS = [
 ] as const;
 
 export const PROCESS_CHECKBOXES = [
-  { value: "approvals", label: "Aprovações dependem de e-mail, papel ou mensagens informais" },
-  { value: "key_people", label: "Processos críticos dependem de pessoas-chave sem substituto" },
-  { value: "no_standards", label: "Falta padronização — cada área executa de forma diferente" },
-  { value: "rework", label: "Retrabalho frequente por erros manuais ou dados incorretos" },
-  { value: "redundant_steps", label: "Existem etapas redundantes ou revisões dispensáveis nos fluxos" },
+  {
+    value: "approvals",
+    label: "Aprovações dependem de e-mail, papel ou mensagens informais",
+  },
+  {
+    value: "key_people",
+    label: "Processos críticos dependem de pessoas-chave sem substituto",
+  },
+  {
+    value: "no_standards",
+    label: "Falta padronização — cada área executa de forma diferente",
+  },
+  {
+    value: "rework",
+    label: "Retrabalho frequente por erros manuais ou dados incorretos",
+  },
+  {
+    value: "redundant_steps",
+    label: "Existem etapas redundantes ou revisões dispensáveis nos fluxos",
+  },
 ] as const;
 
 export const OPERATION_CHECKBOXES = [
-  { value: "data_reentry", label: "Dados são redigitados manualmente entre sistemas" },
-  { value: "spreadsheets", label: "Planilhas paralelas compensam o que o sistema não cobre" },
-  { value: "no_integration", label: "Sistemas não se comunicam — falta integração entre eles" },
-  { value: "data_inconsistency", label: "Informações desatualizadas ou divergentes entre áreas" },
+  {
+    value: "data_reentry",
+    label: "Dados são redigitados manualmente entre sistemas",
+  },
+  {
+    value: "spreadsheets",
+    label: "Planilhas paralelas compensam o que o sistema não cobre",
+  },
+  {
+    value: "no_integration",
+    label: "Sistemas não se comunicam — falta integração entre eles",
+  },
+  {
+    value: "data_inconsistency",
+    label: "Informações desatualizadas ou divergentes entre áreas",
+  },
 ] as const;
 
 export const DOCUMENT_CHECKBOXES = [
-  { value: "high_doc_volume", label: "Alto volume de documentos processados manualmente (NFs, contratos, pedidos)" },
-  { value: "manual_routing", label: "Documentos são encaminhados ou arquivados manualmente entre áreas" },
-  { value: "doc_loss", label: "Perda, duplicação ou dificuldade para localizar documentos" },
-  { value: "compliance_difficulty", label: "Dificuldade em atender auditorias, fiscalizações ou exigências regulatórias" },
+  {
+    value: "high_doc_volume",
+    label:
+      "Alto volume de documentos processados manualmente (NFs, contratos, pedidos)",
+  },
+  {
+    value: "manual_routing",
+    label: "Documentos são encaminhados ou arquivados manualmente entre áreas",
+  },
+  {
+    value: "doc_loss",
+    label: "Perda, duplicação ou dificuldade para localizar documentos",
+  },
+  {
+    value: "compliance_difficulty",
+    label:
+      "Dificuldade em atender auditorias, fiscalizações ou exigências regulatórias",
+  },
 ] as const;
 
 export const COMMUNICATION_CHECKBOXES = [
-  { value: "manual_comms", label: "Comunicação com clientes/fornecedores é manual (e-mail, telefone, WhatsApp)" },
-  { value: "poor_tracking", label: "Difícil rastrear o status de solicitações internas ou de clientes" },
-  { value: "repetitive_queries", label: "Equipe gasta tempo respondendo perguntas e demandas repetitivas" },
-  { value: "slow_reports", label: "Relatórios gerenciais demoram horas ou dias para ficarem prontos" },
-  { value: "no_realtime_data", label: "Decisões baseadas em intuição, sem dados em tempo real sobre a operação" },
+  {
+    value: "manual_comms",
+    label:
+      "Comunicação com clientes/fornecedores é manual (e-mail, telefone, WhatsApp)",
+  },
+  {
+    value: "poor_tracking",
+    label: "Difícil rastrear o status de solicitações internas ou de clientes",
+  },
+  {
+    value: "repetitive_queries",
+    label: "Equipe gasta tempo respondendo perguntas e demandas repetitivas",
+  },
+  {
+    value: "slow_reports",
+    label: "Relatórios gerenciais demoram horas ou dias para ficarem prontos",
+  },
+  {
+    value: "no_realtime_data",
+    label:
+      "Decisões baseadas em intuição, sem dados em tempo real sobre a operação",
+  },
 ] as const;

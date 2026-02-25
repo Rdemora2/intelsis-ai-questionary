@@ -1,19 +1,33 @@
 import { z } from "zod";
 
 const VALID_PROCESS_VALUES = [
-  "approvals", "key_people", "no_standards", "rework", "redundant_steps",
+  "approvals",
+  "key_people",
+  "no_standards",
+  "rework",
+  "redundant_steps",
 ] as const;
 
 const VALID_OPERATION_VALUES = [
-  "data_reentry", "spreadsheets", "no_integration", "data_inconsistency",
+  "data_reentry",
+  "spreadsheets",
+  "no_integration",
+  "data_inconsistency",
 ] as const;
 
 const VALID_DOCUMENT_VALUES = [
-  "high_doc_volume", "manual_routing", "doc_loss", "compliance_difficulty",
+  "high_doc_volume",
+  "manual_routing",
+  "doc_loss",
+  "compliance_difficulty",
 ] as const;
 
 const VALID_COMMUNICATION_VALUES = [
-  "manual_comms", "poor_tracking", "repetitive_queries", "slow_reports", "no_realtime_data",
+  "manual_comms",
+  "poor_tracking",
+  "repetitive_queries",
+  "slow_reports",
+  "no_realtime_data",
 ] as const;
 
 export const scanRequestSchema = z.object({
@@ -52,7 +66,7 @@ export const llmOutputSchema = z.object({
         rationale: z.string().max(300),
         first_step: z.string().max(300),
         sap_solution: z.string().max(100),
-      })
+      }),
     )
     .min(3)
     .max(5),

@@ -9,9 +9,7 @@ export function verifyAdmin(request: Request): boolean {
   const user = decoded.slice(0, separatorIndex);
   const pass = decoded.slice(separatorIndex + 1);
 
-  return (
-    user === process.env.ADMIN_USER && pass === process.env.ADMIN_PASS
-  );
+  return user === process.env.ADMIN_USER && pass === process.env.ADMIN_PASS;
 }
 
 export function unauthorizedResponse(): Response {

@@ -17,7 +17,7 @@ function cleanup() {
 export function checkRateLimit(
   ip: string,
   limit = 10,
-  windowMs = 600_000
+  windowMs = 600_000,
 ): boolean {
   cleanup();
   const now = Date.now();

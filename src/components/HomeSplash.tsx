@@ -41,8 +41,8 @@ export default function HomeSplash({ onFinish }: { onFinish: () => void }) {
             style={{
               width: `${3 + (i % 3) * 2}px`,
               height: `${3 + (i % 3) * 2}px`,
-              top: `${10 + (i * 7) % 80}%`,
-              left: `${5 + (i * 11) % 90}%`,
+              top: `${10 + ((i * 7) % 80)}%`,
+              left: `${5 + ((i * 11) % 90)}%`,
               animationDelay: `${(i * 0.3) % 3}s`,
               animationDuration: `${3 + (i % 4)}s`,
             }}
@@ -60,7 +60,13 @@ export default function HomeSplash({ onFinish }: { onFinish: () => void }) {
             viewBox="0 0 96 96"
           >
             <defs>
-              <linearGradient id="splash-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <linearGradient
+                id="splash-grad"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
                 <stop offset="0%" stopColor="#22c55e" stopOpacity="1" />
                 <stop offset="100%" stopColor="#22c55e" stopOpacity="0" />
               </linearGradient>

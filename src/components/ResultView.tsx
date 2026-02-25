@@ -19,7 +19,8 @@ function LevelBadge({ level, score }: { level: string; score: number }) {
 
   const descriptions: Record<string, string> = {
     LOW: "Há oportunidades pontuais de automação para ganhos rápidos",
-    MEDIUM: "Diversas áreas podem se beneficiar de automação com retorno significativo",
+    MEDIUM:
+      "Diversas áreas podem se beneficiar de automação com retorno significativo",
     HIGH: "Potencial elevado — automação pode transformar a eficiência operacional",
   };
 
@@ -47,8 +48,19 @@ function LevelBadge({ level, score }: { level: string; score: number }) {
 function SapBadge({ solution }: { solution: string }) {
   return (
     <span className="inline-flex items-center gap-1.5 rounded-md bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 text-xs font-medium text-blue-400">
-      <svg className="h-3 w-3 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <svg
+        className="h-3 w-3 flex-shrink-0"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+        <path
+          d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+          strokeWidth="2"
+          stroke="currentColor"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
       {solution}
     </span>
@@ -68,7 +80,9 @@ export default function ResultView({
       <LevelBadge level={level} score={score} />
 
       <div className="rounded-xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-5">
-        <p className="text-sm text-surface-300 leading-relaxed">{executiveSummary}</p>
+        <p className="text-sm text-surface-300 leading-relaxed">
+          {executiveSummary}
+        </p>
       </div>
 
       <div className="rounded-xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-5">
@@ -77,7 +91,10 @@ export default function ResultView({
         </h2>
         <ul className="space-y-2">
           {signals.map((signal, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-surface-300">
+            <li
+              key={i}
+              className="flex items-start gap-2 text-sm text-surface-300"
+            >
               <span className="mt-1 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-brand-400" />
               {signal}
             </li>
@@ -103,7 +120,9 @@ export default function ResultView({
               </div>
               <p className="text-sm text-surface-400 mb-3">{auto.rationale}</p>
               <div className="flex items-start gap-2 rounded-lg bg-brand-500/10 border border-brand-500/20 px-3 py-2">
-                <span className="text-brand-400 font-medium text-xs mt-0.5">→</span>
+                <span className="text-brand-400 font-medium text-xs mt-0.5">
+                  →
+                </span>
                 <p className="text-xs text-brand-300 font-medium">
                   {auto.first_step}
                 </p>
@@ -119,7 +138,10 @@ export default function ResultView({
         </h2>
         <ul className="space-y-2">
           {impacts.map((impact, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-surface-300">
+            <li
+              key={i}
+              className="flex items-start gap-2 text-sm text-surface-300"
+            >
               <span className="mt-1 flex-shrink-0 text-brand-400">✓</span>
               {impact}
             </li>

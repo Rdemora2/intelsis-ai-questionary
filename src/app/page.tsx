@@ -22,37 +22,40 @@ export default function HomePage() {
           <div className="absolute top-1/3 right-1/4 w-[350px] h-[350px] bg-brand-500/5 rounded-full blur-[90px] animate-[float_12s_ease-in-out_4s_infinite]" />
 
           {/* Grid lines */}
-          <div className="absolute inset-0 opacity-[0.03]"
+          <div
+            className="absolute inset-0 opacity-[0.03]"
             style={{
-              backgroundImage: "linear-gradient(rgba(34,197,94,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,0.3) 1px, transparent 1px)",
+              backgroundImage:
+                "linear-gradient(rgba(34,197,94,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,0.3) 1px, transparent 1px)",
               backgroundSize: "60px 60px",
             }}
           />
 
           {/* Animated particles — 16 dots */}
           {[
-            { top: "12%", left: "10%",  w: "w-1",   d: "6s",  delay: "0s" },
-            { top: "25%", left: "85%",  w: "w-1.5", d: "7s",  delay: "1s" },
-            { top: "40%", left: "70%",  w: "w-1",   d: "8s",  delay: "2s" },
-            { top: "55%", left: "25%",  w: "w-1",   d: "5s",  delay: "0.5s" },
-            { top: "70%", left: "55%",  w: "w-0.5", d: "6s",  delay: "3s" },
-            { top: "18%", left: "45%",  w: "w-1",   d: "9s",  delay: "1.5s" },
-            { top: "80%", left: "15%",  w: "w-1.5", d: "7s",  delay: "4s" },
-            { top: "35%", left: "5%",   w: "w-1",   d: "8s",  delay: "2.5s" },
-            { top: "65%", left: "90%",  w: "w-1",   d: "6s",  delay: "0.8s" },
-            { top: "48%", left: "40%",  w: "w-0.5", d: "10s", delay: "3.5s" },
-            { top: "8%",  left: "65%",  w: "w-1",   d: "7s",  delay: "1.2s" },
-            { top: "88%", left: "75%",  w: "w-1",   d: "5s",  delay: "2.8s" },
-            { top: "30%", left: "50%",  w: "w-0.5", d: "9s",  delay: "4.2s" },
-            { top: "75%", left: "35%",  w: "w-1.5", d: "6s",  delay: "1.8s" },
-            { top: "50%", left: "8%",   w: "w-1",   d: "8s",  delay: "3.2s" },
-            { top: "15%", left: "30%",  w: "w-1",   d: "7s",  delay: "0.3s" },
+            { top: "12%", left: "10%", w: "w-1", d: "6s", delay: "0s" },
+            { top: "25%", left: "85%", w: "w-1.5", d: "7s", delay: "1s" },
+            { top: "40%", left: "70%", w: "w-1", d: "8s", delay: "2s" },
+            { top: "55%", left: "25%", w: "w-1", d: "5s", delay: "0.5s" },
+            { top: "70%", left: "55%", w: "w-0.5", d: "6s", delay: "3s" },
+            { top: "18%", left: "45%", w: "w-1", d: "9s", delay: "1.5s" },
+            { top: "80%", left: "15%", w: "w-1.5", d: "7s", delay: "4s" },
+            { top: "35%", left: "5%", w: "w-1", d: "8s", delay: "2.5s" },
+            { top: "65%", left: "90%", w: "w-1", d: "6s", delay: "0.8s" },
+            { top: "48%", left: "40%", w: "w-0.5", d: "10s", delay: "3.5s" },
+            { top: "8%", left: "65%", w: "w-1", d: "7s", delay: "1.2s" },
+            { top: "88%", left: "75%", w: "w-1", d: "5s", delay: "2.8s" },
+            { top: "30%", left: "50%", w: "w-0.5", d: "9s", delay: "4.2s" },
+            { top: "75%", left: "35%", w: "w-1.5", d: "6s", delay: "1.8s" },
+            { top: "50%", left: "8%", w: "w-1", d: "8s", delay: "3.2s" },
+            { top: "15%", left: "30%", w: "w-1", d: "7s", delay: "0.3s" },
           ].map((p, i) => (
             <div
               key={i}
               className={`absolute ${p.w} ${p.w} rounded-full bg-brand-400/30`}
               style={{
-                top: p.top, left: p.left,
+                top: p.top,
+                left: p.left,
                 aspectRatio: "1",
                 animationName: "particle",
                 animationTimingFunction: "ease-in-out",
@@ -84,7 +87,8 @@ export default function HomePage() {
             </h1>
 
             <p className="text-surface-400 text-lg leading-relaxed">
-              Diagnóstico gratuito com recomendações personalizadas de automação.
+              Diagnóstico gratuito com recomendações personalizadas de
+              automação.
             </p>
           </div>
 
@@ -104,11 +108,21 @@ export default function HomePage() {
       </main>
 
       <footer className="border-t border-surface-800 py-4 text-center text-xs text-surface-500">
-        <Link href="/privacy" className="hover:text-brand-400 transition-colors">
+        <Link
+          href="/privacy"
+          className="hover:text-brand-400 transition-colors"
+        >
           Política de Privacidade
         </Link>
         <span className="mx-2 text-surface-700">·</span>
-        <a href="https://grupointelsis.com.br" target="_blank" rel="noopener noreferrer" className="text-surface-600 hover:text-brand-400 transition-colors">Grupo Intelsis</a>
+        <a
+          href="https://grupointelsis.com.br"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-surface-600 hover:text-brand-400 transition-colors"
+        >
+          Grupo Intelsis
+        </a>
       </footer>
     </div>
   );

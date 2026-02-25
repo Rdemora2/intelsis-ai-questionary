@@ -16,10 +16,7 @@ export async function POST(request: NextRequest) {
 
   if (!checkRateLimit(ip, 20)) {
     logRequest(requestId, "POST", "/api/lead", 429, Date.now() - startTime);
-    return NextResponse.json(
-      { error: "Muitas requisições." },
-      { status: 429 }
-    );
+    return NextResponse.json({ error: "Muitas requisições." }, { status: 429 });
   }
 
   try {
@@ -35,7 +32,7 @@ export async function POST(request: NextRequest) {
             message: i.message,
           })),
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -49,14 +46,14 @@ export async function POST(request: NextRequest) {
     if (!existingResult) {
       return NextResponse.json(
         { error: "Resultado não encontrado." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     if (existingResult.lead) {
       return NextResponse.json(
         { error: "Lead já registrado para este diagnóstico." },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -73,14 +70,17 @@ export async function POST(request: NextRequest) {
 
     logRequest(requestId, "POST", "/api/lead", 201, Date.now() - startTime);
 
-    return NextResponse.json({ id: lead.id, message: "Lead registrado." }, { status: 201 });
+    return NextResponse.json(
+      { id: lead.id, message: "Lead registrado." },
+      { status: 201 },
+    );
   } catch (error) {
     logError(requestId, error, "lead_api");
     logRequest(requestId, "POST", "/api/lead", 500, Date.now() - startTime);
 
     return NextResponse.json(
       { error: "Erro interno ao registrar lead." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

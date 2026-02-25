@@ -16,7 +16,7 @@ interface LogEntry {
 export function log(
   level: LogLevel,
   message: string,
-  meta?: Record<string, unknown>
+  meta?: Record<string, unknown>,
 ): void {
   const entry: LogEntry = {
     timestamp: new Date().toISOString(),
@@ -41,7 +41,7 @@ export function logRequest(
   method: string,
   path: string,
   statusCode: number,
-  durationMs: number
+  durationMs: number,
 ): void {
   log("info", "request_completed", {
     request_id: requestId,
@@ -55,7 +55,7 @@ export function logRequest(
 export function logError(
   requestId: string,
   error: unknown,
-  context?: string
+  context?: string,
 ): void {
   const message = error instanceof Error ? error.message : String(error);
   log("error", "error_occurred", {
