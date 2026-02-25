@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  typescript: {
+    // Type-check is done separately via `tsc --noEmit`
+    ignoreBuildErrors: true,
+  },
   async headers() {
     return [
       {

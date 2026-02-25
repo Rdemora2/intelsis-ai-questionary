@@ -158,7 +158,7 @@ export async function POST(request: NextRequest) {
       resultId = result?.id || requestId;
       if (!result) {
         // Let the DB write finish in background
-        dbPromise.catch((err) =>
+        dbPromise.catch((err: unknown) =>
           log("error", "background_db_write_failed", {
             request_id: requestId,
             error: err instanceof Error ? err.message : String(err),
