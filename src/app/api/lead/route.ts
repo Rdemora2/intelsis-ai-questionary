@@ -3,6 +3,8 @@ import { leadRequestSchema } from "@/lib/validation";
 import { sanitizeText } from "@/lib/sanitize";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createRequestId, logRequest, logError } from "@/lib/logger";
+
+export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {

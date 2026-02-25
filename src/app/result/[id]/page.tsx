@@ -4,6 +4,8 @@ import ResultView from "@/components/ResultView";
 import { prisma } from "@/lib/prisma";
 import type { Automation } from "@/types";
 
+export const dynamic = "force-dynamic";
+
 interface ResultPageProps {
   params: { id: string };
 }

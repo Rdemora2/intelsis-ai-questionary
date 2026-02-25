@@ -3,6 +3,8 @@ import { scanRequestSchema } from "@/lib/validation";
 import { calculateScore } from "@/lib/scoring";
 import { generateDiagnosis } from "@/lib/llm";
 import { sanitizeForPrompt } from "@/lib/sanitize";
+
+export const dynamic = "force-dynamic";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createRequestId, log, logRequest, logError } from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
