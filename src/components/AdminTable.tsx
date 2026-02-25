@@ -1,0 +1,286 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { LEVEL_LABELS } from "@/types";
+
+interface AdminEntry {
+  id: string;
+  score: number;
+  level: string;
+  companySize: string | null;
+  area: string | null;
+  createdAt: string;
+  lead: {
+    name: string;
+    company: string;
+    email: string;
+    whatsapp: string | null;
+  } | null;
+}
+
+export default function AdminTable() {
+  const [authenticated, setAuthenticated] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState("");
+
+  const [data, setData] = useState<AdminEntry[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [filterLevel, setFilterLevel] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+
+  const getAuthHeader = useCallback(() => {
+    const stored = typeof window !== "undefined" ? sessionStorage.getItem("bar_auth") : null;
+    return stored ? `Basic ${stored}` : "";
+  }, []);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (filterLevel) params.set("level", filterLevel);
+    if (dateFrom) params.set("dateFrom", dateFrom);
+    if (dateTo) params.set("dateTo", dateTo);
+
+    try {
+      const res = await fetch(`/api/admin/leads?${params.toString()}`, {
+        headers: { Authorization: getAuthHeader() },
+      });
+
+      if (res.status === 401) {
+        setAuthenticated(false);
+        sessionStorage.removeItem("bar_auth");
+        return;
+      }
+
+      const json = await res.json();
+      setData(json.results || []);
+    } catch {
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [filterLevel, dateFrom, dateTo, getAuthHeader]);
+
+  useEffect(() => {
+    if (authenticated) {
+      fetchData();
+    }
+  }, [authenticated, fetchData]);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const token = btoa(`${username}:${password}`);
+
+    try {
+      const res = await fetch("/api/admin/leads", {
+        headers: { Authorization: `Basic ${token}` },
+      });
+
+      if (res.ok) {
+        sessionStorage.setItem("bar_auth", token);
+        setAuthenticated(true);
+        setAuthError("");
+      } else {
+        setAuthError("Credenciais inválidas.");
+      }
+    } catch {
+      setAuthError("Erro de conexão.");
+    }
+  };
+
+  const handleExport = async () => {
+    const params = new URLSearchParams();
+    if (filterLevel) params.set("level", filterLevel);
+    if (dateFrom) params.set("dateFrom", dateFrom);
+    if (dateTo) params.set("dateTo", dateTo);
+
+    const res = await fetch(`/api/admin/export?${params.toString()}`, {
+      headers: { Authorization: getAuthHeader() },
+    });
+
+    if (!res.ok) return;
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `bar-export-${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  if (!authenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <form
+          onSubmit={handleLogin}
+          className="w-full max-w-sm rounded-xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-6 space-y-4"
+        >
+          <h2 className="text-lg font-semibold text-white text-center">
+            Acesso Administrativo
+          </h2>
+
+          <div>
+            <label htmlFor="adminUser" className="block text-sm font-medium text-surface-300 mb-1">
+              Usuário
+            </label>
+            <input
+              id="adminUser"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className="w-full rounded-lg border border-surface-600 bg-surface-800 px-3 py-2.5 text-sm text-white focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="adminPass" className="block text-sm font-medium text-surface-300 mb-1">
+              Senha
+            </label>
+            <input
+              id="adminPass"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full rounded-lg border border-surface-600 bg-surface-800 px-3 py-2.5 text-sm text-white focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+            />
+          </div>
+
+          {authError && (
+            <p className="text-sm text-red-400 text-center">{authError}</p>
+          )}
+
+          <button
+            type="submit"
+            className="w-full rounded-xl bg-gradient-to-r from-brand-500 to-brand-400 py-3 text-sm font-semibold text-white hover:shadow-lg hover:shadow-brand-500/25 transition-all"
+          >
+            Entrar
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-4">
+        <div>
+          <label htmlFor="filterLevel" className="block text-xs font-medium text-surface-400 mb-1">
+            Nível
+          </label>
+          <select
+            id="filterLevel"
+            value={filterLevel}
+            onChange={(e) => setFilterLevel(e.target.value)}
+            className="rounded-lg border border-surface-600 bg-surface-800 px-3 py-2 text-sm text-white"
+          >
+            <option value="">Todos</option>
+            <option value="LOW">Baixo</option>
+            <option value="MEDIUM">Médio</option>
+            <option value="HIGH">Alto</option>
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="dateFrom" className="block text-xs font-medium text-surface-400 mb-1">
+            De
+          </label>
+          <input
+            id="dateFrom"
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="rounded-lg border border-surface-600 bg-surface-800 px-3 py-2 text-sm text-white"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="dateTo" className="block text-xs font-medium text-surface-400 mb-1">
+            Até
+          </label>
+          <input
+            id="dateTo"
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="rounded-lg border border-surface-600 bg-surface-800 px-3 py-2 text-sm text-white"
+          />
+        </div>
+
+        <button
+          onClick={fetchData}
+          className="rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-400 transition-colors"
+        >
+          Filtrar
+        </button>
+
+        <button
+          onClick={handleExport}
+          className="rounded-lg border border-surface-600 px-4 py-2 text-sm font-medium text-surface-300 hover:bg-surface-800 hover:text-white transition-colors"
+        >
+          Exportar CSV
+        </button>
+
+        <span className="text-xs text-surface-500 ml-auto">
+          {data.length} registro(s)
+        </span>
+      </div>
+
+      {loading ? (
+        <div className="text-center py-12 text-sm text-surface-400">Carregando…</div>
+      ) : data.length === 0 ? (
+        <div className="text-center py-12 text-sm text-surface-400">
+          Nenhum registro encontrado.
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-xl border border-surface-700/50">
+          <table className="w-full text-sm">
+            <thead className="bg-surface-800 text-left">
+              <tr>
+                <th className="px-4 py-3 font-medium text-surface-400">Data</th>
+                <th className="px-4 py-3 font-medium text-surface-400">Nível</th>
+                <th className="px-4 py-3 font-medium text-surface-400">Score</th>
+                <th className="px-4 py-3 font-medium text-surface-400">Porte</th>
+                <th className="px-4 py-3 font-medium text-surface-400">Nome</th>
+                <th className="px-4 py-3 font-medium text-surface-400">Empresa</th>
+                <th className="px-4 py-3 font-medium text-surface-400">E-mail</th>
+                <th className="px-4 py-3 font-medium text-surface-400">WhatsApp</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-surface-800 bg-surface-900">
+              {data.map((entry) => (
+                <tr key={entry.id} className="hover:bg-surface-800/60 transition-colors">
+                  <td className="px-4 py-3 text-surface-300 whitespace-nowrap">
+                    {new Date(entry.createdAt).toLocaleDateString("pt-BR")}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
+                        entry.level === "HIGH"
+                          ? "bg-red-500/15 text-red-400"
+                          : entry.level === "MEDIUM"
+                          ? "bg-amber-500/15 text-amber-400"
+                          : "bg-brand-500/15 text-brand-400"
+                      }`}
+                    >
+                      {LEVEL_LABELS[entry.level] || entry.level}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-surface-300">{entry.score}</td>
+                  <td className="px-4 py-3 text-surface-300">{entry.companySize || "—"}</td>
+                  <td className="px-4 py-3 text-surface-300">{entry.lead?.name || "—"}</td>
+                  <td className="px-4 py-3 text-surface-300">{entry.lead?.company || "—"}</td>
+                  <td className="px-4 py-3 text-surface-300">{entry.lead?.email || "—"}</td>
+                  <td className="px-4 py-3 text-surface-300">{entry.lead?.whatsapp || "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}

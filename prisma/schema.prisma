@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ScanResult {
+  id              String   @id @default(cuid())
+  score           Int
+  level           String
+  signals         String
+  automations     String
+  impacts         String
+  executiveSummary String  @map("executive_summary")
+  companySize     String?  @map("company_size")
+  area            String?
+  problemText     String?  @map("problem_text")
+  answers         String
+  requestId       String   @map("request_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+  lead            Lead?
+
+  @@map("scan_results")
+}
+
+model Lead {
+  id        String     @id @default(cuid())
+  name      String
+  company   String
+  email     String
+  whatsapp  String?
+  consent   Boolean
+  resultId  String     @unique @map("result_id")
+  result    ScanResult @relation(fields: [resultId], references: [id])
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  @@map("leads")
+}
