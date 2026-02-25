@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     logRequest(requestId, "POST", "/api/scan", 429, Date.now() - startTime);
     return NextResponse.json(
       { error: "Muitas requisições. Tente novamente em alguns minutos." },
-      { status: 429 }
+      { status: 429 },
     );
   }
 
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     if (rawBody.length > MAX_BODY_SIZE) {
       return NextResponse.json(
         { error: "Payload excede o tamanho máximo permitido." },
-        { status: 413 }
+        { status: 413 },
       );
     }
 
@@ -68,10 +68,7 @@ export async function POST(request: NextRequest) {
     try {
       body = JSON.parse(rawBody);
     } catch {
-      return NextResponse.json(
-        { error: "JSON inválido." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "JSON inválido." }, { status: 400 });
     }
 
     const validation = scanRequestSchema.safeParse(body);
@@ -84,7 +81,7 @@ export async function POST(request: NextRequest) {
             message: i.message,
           })),
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -92,7 +89,11 @@ export async function POST(request: NextRequest) {
     const sanitizedProblemText = sanitizeForPrompt(data.problemText || "");
 
     // Deterministic scoring — used ONLY as fallback safety net
-    const scoring = calculateScore(data.answers, sanitizedProblemText, data.companySize);
+    const scoring = calculateScore(
+      data.answers,
+      sanitizedProblemText,
+      data.companySize,
+    );
 
     // Resolve human-readable labels for the LLM
     const selectedPains = resolveLabels(data.answers);
@@ -159,7 +160,7 @@ export async function POST(request: NextRequest) {
           log("error", "background_db_write_failed", {
             request_id: requestId,
             error: err instanceof Error ? err.message : String(err),
-          })
+          }),
         );
       }
     } catch (dbErr) {
@@ -190,7 +191,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { error: "Erro interno ao processar diagnóstico." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

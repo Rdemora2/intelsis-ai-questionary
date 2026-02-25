@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { scanRequestSchema, leadRequestSchema, llmOutputSchema } from "@/lib/validation";
+import {
+  scanRequestSchema,
+  leadRequestSchema,
+  llmOutputSchema,
+} from "@/lib/validation";
 
 describe("scanRequestSchema", () => {
   const validBase = {
@@ -117,7 +121,12 @@ describe("scanRequestSchema", () => {
 
   it("rejects missing name", () => {
     const result = scanRequestSchema.safeParse({
-      answers: { processes: [], operations: [], documents: [], communication: [] },
+      answers: {
+        processes: [],
+        operations: [],
+        documents: [],
+        communication: [],
+      },
       companySize: "1-50",
       area: "it",
       company: "Test",
@@ -129,7 +138,12 @@ describe("scanRequestSchema", () => {
 
   it("rejects lgpdConsent=false", () => {
     const result = scanRequestSchema.safeParse({
-      answers: { processes: [], operations: [], documents: [], communication: [] },
+      answers: {
+        processes: [],
+        operations: [],
+        documents: [],
+        communication: [],
+      },
       companySize: "1-50",
       area: "it",
       name: "Ana",
@@ -142,7 +156,12 @@ describe("scanRequestSchema", () => {
 
   it("rejects invalid email in scan", () => {
     const result = scanRequestSchema.safeParse({
-      answers: { processes: [], operations: [], documents: [], communication: [] },
+      answers: {
+        processes: [],
+        operations: [],
+        documents: [],
+        communication: [],
+      },
       companySize: "1-50",
       area: "it",
       name: "Ana",
@@ -229,9 +248,24 @@ describe("llmOutputSchema", () => {
       level: "HIGH",
       signals: ["Signal 1", "Signal 2"],
       automations: [
-        { title: "Auto 1", rationale: "Reason 1", first_step: "Step 1", sap_solution: "SAP Build Process Automation" },
-        { title: "Auto 2", rationale: "Reason 2", first_step: "Step 2", sap_solution: "SAP Integration Suite" },
-        { title: "Auto 3", rationale: "Reason 3", first_step: "Step 3", sap_solution: "SAP Analytics Cloud" },
+        {
+          title: "Auto 1",
+          rationale: "Reason 1",
+          first_step: "Step 1",
+          sap_solution: "SAP Build Process Automation",
+        },
+        {
+          title: "Auto 2",
+          rationale: "Reason 2",
+          first_step: "Step 2",
+          sap_solution: "SAP Integration Suite",
+        },
+        {
+          title: "Auto 3",
+          rationale: "Reason 3",
+          first_step: "Step 3",
+          sap_solution: "SAP Analytics Cloud",
+        },
       ],
       impacts: ["Impact 1", "Impact 2", "Impact 3"],
       executive_summary: "Summary text here.",
@@ -245,7 +279,12 @@ describe("llmOutputSchema", () => {
       level: "MEDIUM",
       signals: ["Signal 1", "Signal 2"],
       automations: [
-        { title: "Auto 1", rationale: "Reason 1", first_step: "Step 1", sap_solution: "SAP Signavio" },
+        {
+          title: "Auto 1",
+          rationale: "Reason 1",
+          first_step: "Step 1",
+          sap_solution: "SAP Signavio",
+        },
       ],
       impacts: ["Impact 1", "Impact 2"],
       executive_summary: "Summary.",
@@ -259,9 +298,24 @@ describe("llmOutputSchema", () => {
       level: "MEDIUM",
       signals: ["Only one"],
       automations: [
-        { title: "A1", rationale: "R1", first_step: "S1", sap_solution: "SAP Build Process Automation" },
-        { title: "A2", rationale: "R2", first_step: "S2", sap_solution: "SAP Integration Suite" },
-        { title: "A3", rationale: "R3", first_step: "S3", sap_solution: "SAP Analytics Cloud" },
+        {
+          title: "A1",
+          rationale: "R1",
+          first_step: "S1",
+          sap_solution: "SAP Build Process Automation",
+        },
+        {
+          title: "A2",
+          rationale: "R2",
+          first_step: "S2",
+          sap_solution: "SAP Integration Suite",
+        },
+        {
+          title: "A3",
+          rationale: "R3",
+          first_step: "S3",
+          sap_solution: "SAP Analytics Cloud",
+        },
       ],
       impacts: ["I1", "I2"],
       executive_summary: "Summary.",
@@ -273,9 +327,24 @@ describe("llmOutputSchema", () => {
     const result = llmOutputSchema.safeParse({
       signals: ["S1", "S2"],
       automations: [
-        { title: "A1", rationale: "R1", first_step: "S1", sap_solution: "SAP Build Process Automation" },
-        { title: "A2", rationale: "R2", first_step: "S2", sap_solution: "SAP Integration Suite" },
-        { title: "A3", rationale: "R3", first_step: "S3", sap_solution: "SAP Analytics Cloud" },
+        {
+          title: "A1",
+          rationale: "R1",
+          first_step: "S1",
+          sap_solution: "SAP Build Process Automation",
+        },
+        {
+          title: "A2",
+          rationale: "R2",
+          first_step: "S2",
+          sap_solution: "SAP Integration Suite",
+        },
+        {
+          title: "A3",
+          rationale: "R3",
+          first_step: "S3",
+          sap_solution: "SAP Analytics Cloud",
+        },
       ],
       impacts: ["I1", "I2"],
     });

@@ -15,7 +15,7 @@ Microproduto interativo (60–90 s) para eventos e campanhas corporativas do **G
 | **UI** | Tailwind CSS · Animações CSS custom (partículas, splash, shimmer) |
 | **Validação** | Zod |
 | **Banco de dados** | PostgreSQL — Neon (sa-east-1) · Prisma ORM |
-| **LLM** | Google Gemini (`gemini-2.0-flash`) via `@google/generative-ai` |
+| **LLM** | Google Gemini (`gemini-3-flash-preview`) via `@google/generative-ai` |
 | **Testes** | Vitest (33 testes) |
 
 ---
@@ -123,7 +123,7 @@ src/
 
 ### Integração Gemini
 
-- **Modelo:** `gemini-2.0-flash` (singleton com cache)
+- **Modelo:** `gemini-3-flash-preview` (singleton com cache)
 - **Temperatura:** 0.75 (promove variação nas respostas)
 - **Max tokens:** 2048 (evita truncamento de JSON)
 - **Timeout:** 12 s

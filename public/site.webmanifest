@@ -1,0 +1,21 @@
+{
+  "name": "Business Automation Radar",
+  "short_name": "BAR",
+  "description": "Diagnóstico de maturidade em automação com IA — Grupo Intelsis",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0f1a",
+  "theme_color": "#0a0f1a",
+  "icons": [
+    {
+      "src": "/ico/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/ico/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
