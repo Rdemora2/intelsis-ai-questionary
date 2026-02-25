@@ -31,7 +31,8 @@ export default function AdminTable() {
   const [dateTo, setDateTo] = useState("");
 
   const getAuthHeader = useCallback(() => {
-    const stored = typeof window !== "undefined" ? sessionStorage.getItem("bar_auth") : null;
+    const stored =
+      typeof window !== "undefined" ? sessionStorage.getItem("bar_auth") : null;
     return stored ? `Basic ${stored}` : "";
   }, []);
 
@@ -122,7 +123,10 @@ export default function AdminTable() {
           </h2>
 
           <div>
-            <label htmlFor="adminUser" className="block text-sm font-medium text-surface-300 mb-1">
+            <label
+              htmlFor="adminUser"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
               Usuário
             </label>
             <input
@@ -136,7 +140,10 @@ export default function AdminTable() {
           </div>
 
           <div>
-            <label htmlFor="adminPass" className="block text-sm font-medium text-surface-300 mb-1">
+            <label
+              htmlFor="adminPass"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
               Senha
             </label>
             <input
@@ -168,7 +175,10 @@ export default function AdminTable() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-end gap-3 rounded-xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-4">
         <div>
-          <label htmlFor="filterLevel" className="block text-xs font-medium text-surface-400 mb-1">
+          <label
+            htmlFor="filterLevel"
+            className="block text-xs font-medium text-surface-400 mb-1"
+          >
             Nível
           </label>
           <select
@@ -185,7 +195,10 @@ export default function AdminTable() {
         </div>
 
         <div>
-          <label htmlFor="dateFrom" className="block text-xs font-medium text-surface-400 mb-1">
+          <label
+            htmlFor="dateFrom"
+            className="block text-xs font-medium text-surface-400 mb-1"
+          >
             De
           </label>
           <input
@@ -198,7 +211,10 @@ export default function AdminTable() {
         </div>
 
         <div>
-          <label htmlFor="dateTo" className="block text-xs font-medium text-surface-400 mb-1">
+          <label
+            htmlFor="dateTo"
+            className="block text-xs font-medium text-surface-400 mb-1"
+          >
             Até
           </label>
           <input
@@ -230,7 +246,9 @@ export default function AdminTable() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-sm text-surface-400">Carregando…</div>
+        <div className="text-center py-12 text-sm text-surface-400">
+          Carregando…
+        </div>
       ) : data.length === 0 ? (
         <div className="text-center py-12 text-sm text-surface-400">
           Nenhum registro encontrado.
@@ -241,18 +259,33 @@ export default function AdminTable() {
             <thead className="bg-surface-800 text-left">
               <tr>
                 <th className="px-4 py-3 font-medium text-surface-400">Data</th>
-                <th className="px-4 py-3 font-medium text-surface-400">Nível</th>
-                <th className="px-4 py-3 font-medium text-surface-400">Score</th>
-                <th className="px-4 py-3 font-medium text-surface-400">Porte</th>
+                <th className="px-4 py-3 font-medium text-surface-400">
+                  Nível
+                </th>
+                <th className="px-4 py-3 font-medium text-surface-400">
+                  Score
+                </th>
+                <th className="px-4 py-3 font-medium text-surface-400">
+                  Porte
+                </th>
                 <th className="px-4 py-3 font-medium text-surface-400">Nome</th>
-                <th className="px-4 py-3 font-medium text-surface-400">Empresa</th>
-                <th className="px-4 py-3 font-medium text-surface-400">E-mail</th>
-                <th className="px-4 py-3 font-medium text-surface-400">WhatsApp</th>
+                <th className="px-4 py-3 font-medium text-surface-400">
+                  Empresa
+                </th>
+                <th className="px-4 py-3 font-medium text-surface-400">
+                  E-mail
+                </th>
+                <th className="px-4 py-3 font-medium text-surface-400">
+                  WhatsApp
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-surface-800 bg-surface-900">
               {data.map((entry) => (
-                <tr key={entry.id} className="hover:bg-surface-800/60 transition-colors">
+                <tr
+                  key={entry.id}
+                  className="hover:bg-surface-800/60 transition-colors"
+                >
                   <td className="px-4 py-3 text-surface-300 whitespace-nowrap">
                     {new Date(entry.createdAt).toLocaleDateString("pt-BR")}
                   </td>
@@ -262,19 +295,29 @@ export default function AdminTable() {
                         entry.level === "HIGH"
                           ? "bg-red-500/15 text-red-400"
                           : entry.level === "MEDIUM"
-                          ? "bg-amber-500/15 text-amber-400"
-                          : "bg-brand-500/15 text-brand-400"
+                            ? "bg-amber-500/15 text-amber-400"
+                            : "bg-brand-500/15 text-brand-400"
                       }`}
                     >
                       {LEVEL_LABELS[entry.level] || entry.level}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-surface-300">{entry.score}</td>
-                  <td className="px-4 py-3 text-surface-300">{entry.companySize || "—"}</td>
-                  <td className="px-4 py-3 text-surface-300">{entry.lead?.name || "—"}</td>
-                  <td className="px-4 py-3 text-surface-300">{entry.lead?.company || "—"}</td>
-                  <td className="px-4 py-3 text-surface-300">{entry.lead?.email || "—"}</td>
-                  <td className="px-4 py-3 text-surface-300">{entry.lead?.whatsapp || "—"}</td>
+                  <td className="px-4 py-3 text-surface-300">
+                    {entry.companySize || "—"}
+                  </td>
+                  <td className="px-4 py-3 text-surface-300">
+                    {entry.lead?.name || "—"}
+                  </td>
+                  <td className="px-4 py-3 text-surface-300">
+                    {entry.lead?.company || "—"}
+                  </td>
+                  <td className="px-4 py-3 text-surface-300">
+                    {entry.lead?.email || "—"}
+                  </td>
+                  <td className="px-4 py-3 text-surface-300">
+                    {entry.lead?.whatsapp || "—"}
+                  </td>
                 </tr>
               ))}
             </tbody>

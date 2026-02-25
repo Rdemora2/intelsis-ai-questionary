@@ -17,10 +17,32 @@ describe("calculateScore", () => {
 
   it("returns HIGH for all checkboxes selected", () => {
     const result = calculateScore({
-      processes: ["approvals", "rework", "key_people", "no_standards", "redundant_steps"],
-      operations: ["data_reentry", "spreadsheets", "no_integration", "data_inconsistency"],
-      documents: ["high_doc_volume", "manual_routing", "compliance_difficulty", "doc_loss"],
-      communication: ["manual_comms", "poor_tracking", "repetitive_queries", "slow_reports", "no_realtime_data"],
+      processes: [
+        "approvals",
+        "rework",
+        "key_people",
+        "no_standards",
+        "redundant_steps",
+      ],
+      operations: [
+        "data_reentry",
+        "spreadsheets",
+        "no_integration",
+        "data_inconsistency",
+      ],
+      documents: [
+        "high_doc_volume",
+        "manual_routing",
+        "compliance_difficulty",
+        "doc_loss",
+      ],
+      communication: [
+        "manual_comms",
+        "poor_tracking",
+        "repetitive_queries",
+        "slow_reports",
+        "no_realtime_data",
+      ],
     });
     expect(result.score).toBe(100);
     expect(result.level).toBe("HIGH");
@@ -60,8 +82,13 @@ describe("calculateScore", () => {
       communication: [],
     });
     const withText = calculateScore(
-      { processes: ["approvals"], operations: [], documents: [], communication: [] },
-      "temos muito retrabalho e demora nos processos manuais"
+      {
+        processes: ["approvals"],
+        operations: [],
+        documents: [],
+        communication: [],
+      },
+      "temos muito retrabalho e demora nos processos manuais",
     );
     expect(withText.score).toBeGreaterThan(withoutText.score);
   });
@@ -74,8 +101,13 @@ describe("calculateScore", () => {
       communication: [],
     });
     const boosted = calculateScore(
-      { processes: ["approvals"], operations: [], documents: [], communication: [] },
-      "retrabalho manual lento demora planilha erro duplica perda atraso gargalo papel email"
+      {
+        processes: ["approvals"],
+        operations: [],
+        documents: [],
+        communication: [],
+      },
+      "retrabalho manual lento demora planilha erro duplica perda atraso gargalo papel email",
     );
     expect(boosted.score - base.score).toBeLessThanOrEqual(10);
   });
@@ -83,12 +115,34 @@ describe("calculateScore", () => {
   it("caps total score at 100", () => {
     const result = calculateScore(
       {
-        processes: ["approvals", "rework", "key_people", "no_standards", "redundant_steps"],
-        operations: ["data_reentry", "spreadsheets", "no_integration", "data_inconsistency"],
-        documents: ["high_doc_volume", "manual_routing", "compliance_difficulty", "doc_loss"],
-        communication: ["manual_comms", "poor_tracking", "repetitive_queries", "slow_reports", "no_realtime_data"],
+        processes: [
+          "approvals",
+          "rework",
+          "key_people",
+          "no_standards",
+          "redundant_steps",
+        ],
+        operations: [
+          "data_reentry",
+          "spreadsheets",
+          "no_integration",
+          "data_inconsistency",
+        ],
+        documents: [
+          "high_doc_volume",
+          "manual_routing",
+          "compliance_difficulty",
+          "doc_loss",
+        ],
+        communication: [
+          "manual_comms",
+          "poor_tracking",
+          "repetitive_queries",
+          "slow_reports",
+          "no_realtime_data",
+        ],
       },
-      "retrabalho manual lento demora planilha erro"
+      "retrabalho manual lento demora planilha erro",
     );
     expect(result.score).toBe(100);
   });
@@ -109,7 +163,12 @@ describe("calculateScore", () => {
     const result = calculateScore({
       processes: [],
       operations: [],
-      documents: ["high_doc_volume", "manual_routing", "compliance_difficulty", "doc_loss"],
+      documents: [
+        "high_doc_volume",
+        "manual_routing",
+        "compliance_difficulty",
+        "doc_loss",
+      ],
       communication: [],
     });
     expect(result.themes[0]).toBe("document_processing");

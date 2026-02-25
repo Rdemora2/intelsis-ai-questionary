@@ -18,7 +18,11 @@ export default function LeadForm({ resultId }: LeadFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const isValid = name.trim().length >= 2 && company.trim().length >= 2 && email.includes("@") && consent;
+  const isValid =
+    name.trim().length >= 2 &&
+    company.trim().length >= 2 &&
+    email.includes("@") &&
+    consent;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,8 +61,14 @@ export default function LeadForm({ resultId }: LeadFormProps) {
   if (skipped) {
     return (
       <div className="text-center py-6 text-sm text-surface-400">
-        <p>Obrigado por participar! Visite nosso stand para conversar com um especialista.</p>
-        <Link href="/" className="text-brand-400 hover:text-brand-300 mt-2 inline-block">
+        <p>
+          Obrigado por participar! Visite nosso stand para conversar com um
+          especialista.
+        </p>
+        <Link
+          href="/"
+          className="text-brand-400 hover:text-brand-300 mt-2 inline-block"
+        >
           ← Novo diagnóstico
         </Link>
       </div>
@@ -69,9 +79,12 @@ export default function LeadForm({ resultId }: LeadFormProps) {
     return (
       <div className="rounded-xl border border-brand-500/30 bg-brand-500/10 p-6 text-center">
         <div className="text-3xl mb-3">✉️</div>
-        <h3 className="font-semibold text-brand-400 mb-1">Dados registrados!</h3>
+        <h3 className="font-semibold text-brand-400 mb-1">
+          Dados registrados!
+        </h3>
         <p className="text-sm text-surface-300">
-          Um especialista Intelsis entrará em contato para aprofundar o diagnóstico e discutir as soluções SAP recomendadas.
+          Um especialista Intelsis entrará em contato para aprofundar o
+          diagnóstico e discutir as soluções SAP recomendadas.
         </p>
         <Link
           href="/"
@@ -96,7 +109,10 @@ export default function LeadForm({ resultId }: LeadFormProps) {
 
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
-          <label htmlFor="leadName" className="block text-sm font-medium text-surface-300 mb-1">
+          <label
+            htmlFor="leadName"
+            className="block text-sm font-medium text-surface-300 mb-1"
+          >
             Nome
           </label>
           <input
@@ -111,7 +127,10 @@ export default function LeadForm({ resultId }: LeadFormProps) {
         </div>
 
         <div>
-          <label htmlFor="leadCompany" className="block text-sm font-medium text-surface-300 mb-1">
+          <label
+            htmlFor="leadCompany"
+            className="block text-sm font-medium text-surface-300 mb-1"
+          >
             Empresa
           </label>
           <input
@@ -126,7 +145,10 @@ export default function LeadForm({ resultId }: LeadFormProps) {
         </div>
 
         <div>
-          <label htmlFor="leadEmail" className="block text-sm font-medium text-surface-300 mb-1">
+          <label
+            htmlFor="leadEmail"
+            className="block text-sm font-medium text-surface-300 mb-1"
+          >
             E-mail
           </label>
           <input
@@ -141,8 +163,12 @@ export default function LeadForm({ resultId }: LeadFormProps) {
         </div>
 
         <div>
-          <label htmlFor="leadWhatsapp" className="block text-sm font-medium text-surface-300 mb-1">
-            WhatsApp <span className="text-surface-500 font-normal">(opcional)</span>
+          <label
+            htmlFor="leadWhatsapp"
+            className="block text-sm font-medium text-surface-300 mb-1"
+          >
+            WhatsApp{" "}
+            <span className="text-surface-500 font-normal">(opcional)</span>
           </label>
           <input
             id="leadWhatsapp"
@@ -165,7 +191,11 @@ export default function LeadForm({ resultId }: LeadFormProps) {
           />
           <span className="text-xs text-surface-400 leading-relaxed">
             Concordo em ser contatado(a) sobre este diagnóstico, conforme a{" "}
-            <Link href="/privacy" className="text-brand-400 underline" target="_blank">
+            <Link
+              href="/privacy"
+              className="text-brand-400 underline"
+              target="_blank"
+            >
               Política de Privacidade
             </Link>
             .

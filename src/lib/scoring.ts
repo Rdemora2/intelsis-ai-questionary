@@ -30,23 +30,36 @@ const MAX_WEIGHT = Object.values(WEIGHTS).reduce((a, b) => a + b, 0);
 
 const SIGNAL_LABELS: Record<string, string> = {
   approvals: "Fluxos de aprovação com alto potencial de automação",
-  key_people: "Processos concentrados em pessoas-chave com oportunidade de padronização",
-  no_standards: "Espaço para padronização e documentação de processos operacionais",
-  rework: "Oportunidade de reduzir retrabalho com validação e automação de dados",
-  redundant_steps: "Etapas que podem ser simplificadas ou automatizadas nos fluxos",
-  data_reentry: "Potencial de eliminar redigitação manual com integração entre sistemas",
-  spreadsheets: "Controles em planilhas que podem migrar para plataforma integrada",
-  no_integration: "Oportunidade de conectar sistemas corporativos via integração nativa",
-  data_inconsistency: "Dados que se beneficiariam de governança e sincronização automatizada",
-  high_doc_volume: "Volume documental que pode ser otimizado com gestão digital",
+  key_people:
+    "Processos concentrados em pessoas-chave com oportunidade de padronização",
+  no_standards:
+    "Espaço para padronização e documentação de processos operacionais",
+  rework:
+    "Oportunidade de reduzir retrabalho com validação e automação de dados",
+  redundant_steps:
+    "Etapas que podem ser simplificadas ou automatizadas nos fluxos",
+  data_reentry:
+    "Potencial de eliminar redigitação manual com integração entre sistemas",
+  spreadsheets:
+    "Controles em planilhas que podem migrar para plataforma integrada",
+  no_integration:
+    "Oportunidade de conectar sistemas corporativos via integração nativa",
+  data_inconsistency:
+    "Dados que se beneficiariam de governança e sincronização automatizada",
+  high_doc_volume:
+    "Volume documental que pode ser otimizado com gestão digital",
   manual_routing: "Encaminhamento de documentos com potencial de automação",
   doc_loss: "Gestão documental que pode ganhar rastreabilidade e segurança",
-  compliance_difficulty: "Oportunidade de fortalecer conformidade com automação de controles",
-  manual_comms: "Comunicação com clientes e fornecedores que pode ser automatizada",
+  compliance_difficulty:
+    "Oportunidade de fortalecer conformidade com automação de controles",
+  manual_comms:
+    "Comunicação com clientes e fornecedores que pode ser automatizada",
   poor_tracking: "Rastreabilidade de solicitações com espaço para evolução",
-  repetitive_queries: "Demandas recorrentes que podem ser atendidas por assistente inteligente",
+  repetitive_queries:
+    "Demandas recorrentes que podem ser atendidas por assistente inteligente",
   slow_reports: "Relatórios gerenciais com potencial de automação e tempo real",
-  no_realtime_data: "Oportunidade de ter dados em tempo real para decisões mais ágeis",
+  no_realtime_data:
+    "Oportunidade de ter dados em tempo real para decisões mais ágeis",
 };
 
 const THEME_MAP: Record<string, string[]> = {
@@ -71,10 +84,26 @@ const THEME_MAP: Record<string, string[]> = {
 };
 
 const KEYWORD_PATTERNS = [
-  "retrabalho", "manual", "lento", "demora", "planilha",
-  "erro", "duplica", "perd", "atraso", "gargalo",
-  "papel", "email", "e-mail", "ineficien", "falha",
-  "integra", "sistema", "automati", "repetitiv", "controle",
+  "retrabalho",
+  "manual",
+  "lento",
+  "demora",
+  "planilha",
+  "erro",
+  "duplica",
+  "perd",
+  "atraso",
+  "gargalo",
+  "papel",
+  "email",
+  "e-mail",
+  "ineficien",
+  "falha",
+  "integra",
+  "sistema",
+  "automati",
+  "repetitiv",
+  "controle",
 ];
 
 // Larger companies amplify the same pain points

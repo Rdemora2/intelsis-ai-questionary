@@ -20,7 +20,12 @@ interface CheckboxGroupProps {
   onChange: (values: string[]) => void;
 }
 
-function CheckboxGroup({ title, items, selected, onChange }: CheckboxGroupProps) {
+function CheckboxGroup({
+  title,
+  items,
+  selected,
+  onChange,
+}: CheckboxGroupProps) {
   const toggle = (value: string) => {
     if (selected.includes(value)) {
       onChange(selected.filter((v) => v !== value));
@@ -73,8 +78,20 @@ export default function ScanForm() {
   const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState("");
 
-  const hasSelection = processes.length + operations.length + documents.length + communication.length > 0;
-  const isValid = hasSelection && companySize && area && name.trim().length >= 2 && company.trim().length >= 2 && email.includes("@") && lgpdConsent;
+  const hasSelection =
+    processes.length +
+      operations.length +
+      documents.length +
+      communication.length >
+    0;
+  const isValid =
+    hasSelection &&
+    companySize &&
+    area &&
+    name.trim().length >= 2 &&
+    company.trim().length >= 2 &&
+    email.includes("@") &&
+    lgpdConsent;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,7 +138,11 @@ export default function ScanForm() {
       clearTimeout(timer2);
       setLoading(false);
       setLoadingStep(0);
-      setError(err instanceof Error ? err.message : "Erro inesperado. Tente novamente.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Erro inesperado. Tente novamente.",
+      );
     }
   };
 
@@ -132,7 +153,9 @@ export default function ScanForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6 pb-8">
       <div className="text-center mb-2">
-        <h1 className="text-xl font-bold text-white">Diagnóstico de Automação</h1>
+        <h1 className="text-xl font-bold text-white">
+          Diagnóstico de Automação
+        </h1>
         <p className="text-sm text-surface-400 mt-1">
           Marque as dores que você e sua equipe vivenciam no dia a dia
         </p>
@@ -171,7 +194,10 @@ export default function ScanForm() {
           Contexto (opcional)
         </legend>
         <div className="mt-2">
-          <label htmlFor="problemText" className="block text-sm text-surface-400 mb-2">
+          <label
+            htmlFor="problemText"
+            className="block text-sm text-surface-400 mb-2"
+          >
             Descreva brevemente um problema operacional atual
           </label>
           <textarea
@@ -195,7 +221,10 @@ export default function ScanForm() {
         </legend>
         <div className="mt-2 space-y-4">
           <div>
-            <label htmlFor="leadName" className="block text-sm font-medium text-surface-300 mb-1">
+            <label
+              htmlFor="leadName"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
               Seu nome <span className="text-red-400">*</span>
             </label>
             <input
@@ -211,7 +240,10 @@ export default function ScanForm() {
           </div>
 
           <div>
-            <label htmlFor="leadCompany" className="block text-sm font-medium text-surface-300 mb-1">
+            <label
+              htmlFor="leadCompany"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
               Empresa <span className="text-red-400">*</span>
             </label>
             <input
@@ -227,7 +259,10 @@ export default function ScanForm() {
           </div>
 
           <div>
-            <label htmlFor="leadEmail" className="block text-sm font-medium text-surface-300 mb-1">
+            <label
+              htmlFor="leadEmail"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
               E-mail corporativo <span className="text-red-400">*</span>
             </label>
             <input
@@ -243,7 +278,10 @@ export default function ScanForm() {
           </div>
 
           <div>
-            <label htmlFor="companySize" className="block text-sm font-medium text-surface-300 mb-1">
+            <label
+              htmlFor="companySize"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
               Tamanho da empresa <span className="text-red-400">*</span>
             </label>
             <select
@@ -263,7 +301,10 @@ export default function ScanForm() {
           </div>
 
           <div>
-            <label htmlFor="area" className="block text-sm font-medium text-surface-300 mb-1">
+            <label
+              htmlFor="area"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
               Área principal <span className="text-red-400">*</span>
             </label>
             <select
@@ -294,12 +335,18 @@ export default function ScanForm() {
           className="mt-0.5 h-5 w-5 rounded border-surface-600 bg-surface-800 text-brand-500 focus:ring-brand-500 focus:ring-offset-surface-900 cursor-pointer flex-shrink-0"
         />
         <span className="text-xs text-surface-400 leading-relaxed">
-          Concordo com o tratamento dos meus dados pessoais para fins deste diagnóstico e possível contato
-          comercial, conforme a{" "}
-          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline hover:text-brand-300">
+          Concordo com o tratamento dos meus dados pessoais para fins deste
+          diagnóstico e possível contato comercial, conforme a{" "}
+          <a
+            href="/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand-400 underline hover:text-brand-300"
+          >
             Política de Privacidade
           </a>{" "}
-          e em conformidade com a LGPD (Lei nº 13.709/2018). <span className="text-red-400">*</span>
+          e em conformidade com a LGPD (Lei nº 13.709/2018).{" "}
+          <span className="text-red-400">*</span>
         </span>
       </label>
 
