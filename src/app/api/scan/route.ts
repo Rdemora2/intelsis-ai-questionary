@@ -76,10 +76,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: "Dados inválidos.",
-          details: validation.error.issues.map((i) => ({
-            field: i.path.join("."),
-            message: i.message,
-          })),
+          details: validation.error.issues.map(
+            (i: { path: (string | number)[]; message: string }) => ({
+              field: i.path.join("."),
+              message: i.message,
+            }),
+          ),
         },
         { status: 400 },
       );

@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
     "Consentimento",
   ];
 
-  const rows = results.map((r: (typeof results)[number]) => [
+  const rows: string[][] = results.map((r: (typeof results)[number]) => [
     r.createdAt.toISOString(),
     r.id,
     String(r.score),
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
   const csv =
     headers.map(escapeCSV).join(",") +
     "\n" +
-    rows.map((row) => row.map(escapeCSV).join(",")).join("\n");
+    rows.map((row: string[]) => row.map(escapeCSV).join(",")).join("\n");
 
   return new NextResponse(csv, {
     status: 200,

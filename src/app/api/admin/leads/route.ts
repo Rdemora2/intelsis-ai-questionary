@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     take: 500,
   });
 
-  const formatted = results.map((r) => ({
+  const formatted = results.map((r: (typeof results)[number]) => ({
     id: r.id,
     score: r.score,
     level: r.level,
