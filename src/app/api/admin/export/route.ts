@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
     "Consentimento",
   ];
 
-  const rows = results.map((r) => [
+  const rows = results.map((r: (typeof results)[number]) => [
     r.createdAt.toISOString(),
     r.id,
     String(r.score),
