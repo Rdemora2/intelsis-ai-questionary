@@ -1,21 +1,27 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { LEVEL_LABELS } from "@/types";
+import {
+  COMPANY_SIZE_LABELS,
+  MOTIVATOR_LABELS,
+  CHALLENGE_LABELS,
+} from "@/types";
 
-interface AdminEntry {
+interface LeadEntry {
   id: string;
-  score: number;
-  level: string;
-  companySize: string | null;
-  area: string | null;
+  fullName: string;
+  company: string;
+  email: string;
+  phone: string;
+  jobTitle: string;
+  companySize: string;
+  motivator: string;
+  sapModules: string[];
+  challenges: string;
+  demoInterest: boolean;
+  techHelp: boolean;
+  techHelpText: string | null;
   createdAt: string;
-  lead: {
-    name: string;
-    company: string;
-    email: string;
-    whatsapp: string | null;
-  } | null;
 }
 
 export default function AdminTable() {
@@ -24,9 +30,9 @@ export default function AdminTable() {
   const [password, setPassword] = useState("");
   const [authError, setAuthError] = useState("");
 
-  const [data, setData] = useState<AdminEntry[]>([]);
+  const [data, setData] = useState<LeadEntry[]>([]);
   const [loading, setLoading] = useState(false);
-  const [filterLevel, setFilterLevel] = useState("");
+  const [filterSize, setFilterSize] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
@@ -39,7 +45,7 @@ export default function AdminTable() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     const params = new URLSearchParams();
-    if (filterLevel) params.set("level", filterLevel);
+    if (filterSize) params.set("companySize", filterSize);
     if (dateFrom) params.set("dateFrom", dateFrom);
     if (dateTo) params.set("dateTo", dateTo);
 
@@ -61,7 +67,7 @@ export default function AdminTable() {
     } finally {
       setLoading(false);
     }
-  }, [filterLevel, dateFrom, dateTo, getAuthHeader]);
+  }, [filterSize, dateFrom, dateTo, getAuthHeader]);
 
   useEffect(() => {
     if (authenticated) {
@@ -92,7 +98,7 @@ export default function AdminTable() {
 
   const handleExport = async () => {
     const params = new URLSearchParams();
-    if (filterLevel) params.set("level", filterLevel);
+    if (filterSize) params.set("companySize", filterSize);
     if (dateFrom) params.set("dateFrom", dateFrom);
     if (dateTo) params.set("dateTo", dateTo);
 
@@ -106,7 +112,7 @@ export default function AdminTable() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `bar-export-${new Date().toISOString().split("T")[0]}.csv`;
+    a.download = `leads-export-${new Date().toISOString().split("T")[0]}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -176,21 +182,23 @@ export default function AdminTable() {
       <div className="flex flex-wrap items-end gap-3 rounded-xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-4">
         <div>
           <label
-            htmlFor="filterLevel"
+            htmlFor="filterSize"
             className="block text-xs font-medium text-surface-400 mb-1"
           >
-            Nível
+            Porte
           </label>
           <select
-            id="filterLevel"
-            value={filterLevel}
-            onChange={(e) => setFilterLevel(e.target.value)}
+            id="filterSize"
+            value={filterSize}
+            onChange={(e) => setFilterSize(e.target.value)}
             className="rounded-lg border border-surface-600 bg-surface-800 px-3 py-2 text-sm text-white"
           >
             <option value="">Todos</option>
-            <option value="LOW">Baixo</option>
-            <option value="MEDIUM">Médio</option>
-            <option value="HIGH">Alto</option>
+            <option value="startup">Startup</option>
+            <option value="small">Pequena</option>
+            <option value="medium">Média</option>
+            <option value="large">Grande</option>
+            <option value="enterprise">Corporação</option>
           </select>
         </div>
 
@@ -259,15 +267,6 @@ export default function AdminTable() {
             <thead className="bg-surface-800 text-left">
               <tr>
                 <th className="px-4 py-3 font-medium text-surface-400">Data</th>
-                <th className="px-4 py-3 font-medium text-surface-400">
-                  Nível
-                </th>
-                <th className="px-4 py-3 font-medium text-surface-400">
-                  Score
-                </th>
-                <th className="px-4 py-3 font-medium text-surface-400">
-                  Porte
-                </th>
                 <th className="px-4 py-3 font-medium text-surface-400">Nome</th>
                 <th className="px-4 py-3 font-medium text-surface-400">
                   Empresa
@@ -276,7 +275,28 @@ export default function AdminTable() {
                   E-mail
                 </th>
                 <th className="px-4 py-3 font-medium text-surface-400">
-                  WhatsApp
+                  Telefone
+                </th>
+                <th className="px-4 py-3 font-medium text-surface-400">
+                  Cargo
+                </th>
+                <th className="px-4 py-3 font-medium text-surface-400">
+                  Porte
+                </th>
+                <th className="px-4 py-3 font-medium text-surface-400">
+                  Motivador
+                </th>
+                <th className="px-4 py-3 font-medium text-surface-400">
+                  Desafio
+                </th>
+                <th className="px-4 py-3 font-medium text-surface-400">
+                  Demo
+                </th>
+                <th className="px-4 py-3 font-medium text-surface-400">
+                  Tech
+                </th>
+                <th className="px-4 py-3 font-medium text-surface-400">
+                  Detalhe
                 </th>
               </tr>
             </thead>
@@ -289,34 +309,43 @@ export default function AdminTable() {
                   <td className="px-4 py-3 text-surface-300 whitespace-nowrap">
                     {new Date(entry.createdAt).toLocaleDateString("pt-BR")}
                   </td>
+                  <td className="px-4 py-3 text-surface-300">
+                    {entry.fullName}
+                  </td>
+                  <td className="px-4 py-3 text-surface-300">
+                    {entry.company}
+                  </td>
+                  <td className="px-4 py-3 text-surface-300">{entry.email}</td>
+                  <td className="px-4 py-3 text-surface-300">{entry.phone}</td>
+                  <td className="px-4 py-3 text-surface-300">
+                    {entry.jobTitle}
+                  </td>
+                  <td className="px-4 py-3 text-surface-300">
+                    {COMPANY_SIZE_LABELS[entry.companySize] ||
+                      entry.companySize}
+                  </td>
+                  <td className="px-4 py-3 text-surface-300">
+                    {MOTIVATOR_LABELS[entry.motivator] || entry.motivator}
+                  </td>
+                  <td className="px-4 py-3 text-surface-300">
+                    {CHALLENGE_LABELS[entry.challenges] || entry.challenges}
+                  </td>
                   <td className="px-4 py-3">
-                    <span
-                      className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
-                        entry.level === "HIGH"
-                          ? "bg-red-500/15 text-red-400"
-                          : entry.level === "MEDIUM"
-                            ? "bg-amber-500/15 text-amber-400"
-                            : "bg-brand-500/15 text-brand-400"
-                      }`}
-                    >
-                      {LEVEL_LABELS[entry.level] || entry.level}
-                    </span>
+                    {entry.demoInterest ? (
+                      <span className="text-brand-400">Sim</span>
+                    ) : (
+                      <span className="text-surface-500">—</span>
+                    )}
                   </td>
-                  <td className="px-4 py-3 text-surface-300">{entry.score}</td>
-                  <td className="px-4 py-3 text-surface-300">
-                    {entry.companySize || "—"}
+                  <td className="px-4 py-3">
+                    {entry.techHelp ? (
+                      <span className="text-brand-400">Sim</span>
+                    ) : (
+                      <span className="text-surface-500">—</span>
+                    )}
                   </td>
-                  <td className="px-4 py-3 text-surface-300">
-                    {entry.lead?.name || "—"}
-                  </td>
-                  <td className="px-4 py-3 text-surface-300">
-                    {entry.lead?.company || "—"}
-                  </td>
-                  <td className="px-4 py-3 text-surface-300">
-                    {entry.lead?.email || "—"}
-                  </td>
-                  <td className="px-4 py-3 text-surface-300">
-                    {entry.lead?.whatsapp || "—"}
+                  <td className="px-4 py-3 text-surface-300 max-w-[200px] truncate" title={entry.techHelpText || ""}>
+                    {entry.techHelpText || "—"}
                   </td>
                 </tr>
               ))}

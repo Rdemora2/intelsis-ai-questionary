@@ -7,35 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ScanResult {
-  id              String   @id @default(cuid())
-  score           Int
-  level           String
-  signals         String
-  automations     String
-  impacts         String
-  executiveSummary String  @map("executive_summary")
-  companySize     String?  @map("company_size")
-  area            String?
-  problemText     String?  @map("problem_text")
-  answers         String
-  requestId       String   @map("request_id")
-  createdAt       DateTime @default(now()) @map("created_at")
-  lead            Lead?
-
-  @@map("scan_results")
-}
-
 model Lead {
-  id        String     @id @default(cuid())
-  name      String
-  company   String
-  email     String
-  whatsapp  String?
-  consent   Boolean
-  resultId  String     @unique @map("result_id")
-  result    ScanResult @relation(fields: [resultId], references: [id])
-  createdAt DateTime   @default(now()) @map("created_at")
+  id           String   @id @default(cuid())
+  fullName     String   @map("full_name")
+  company      String
+  email        String
+  phone        String
+  jobTitle     String   @map("job_title")
+  companySize  String   @map("company_size")
+  motivator    String
+  sapModules   String   @map("sap_modules") // JSON array stored as string
+  challenges   String
+  demoInterest Boolean  @default(false) @map("demo_interest")
+  techHelp     Boolean  @default(false) @map("tech_help")
+  techHelpText String?  @map("tech_help_text")
+  consent      Boolean
+  createdAt    DateTime @default(now()) @map("created_at")
 
   @@map("leads")
 }

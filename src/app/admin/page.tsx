@@ -14,7 +14,7 @@ export default function AdminPage() {
       </div>
       <main className="mx-auto w-full max-w-6xl px-4 py-4">
         <h1 className="text-xl font-bold text-white mb-4">
-          Painel Administrativo
+          Painel de Leads — SAP House 2026
         </h1>
         <AdminTable />
       </main>

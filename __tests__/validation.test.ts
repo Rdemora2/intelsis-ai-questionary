@@ -1,353 +1,189 @@
 import { describe, it, expect } from "vitest";
-import {
-  scanRequestSchema,
-  leadRequestSchema,
-  llmOutputSchema,
-} from "@/lib/validation";
-
-describe("scanRequestSchema", () => {
-  const validBase = {
-    name: "João Silva",
-    company: "Empresa XYZ",
-    email: "joao@empresa.com",
-    lgpdConsent: true as const,
-  };
-
-  it("accepts valid input", () => {
-    const result = scanRequestSchema.safeParse({
-      answers: {
-        processes: ["approvals", "rework"],
-        operations: ["data_reentry"],
-        documents: [],
-        communication: ["slow_reports"],
-      },
-      problemText: "Temos problemas com retrabalho",
-      companySize: "51-200",
-      area: "operations",
-      ...validBase,
-    });
-    expect(result.success).toBe(true);
-  });
-
-  it("accepts empty optional problemText", () => {
-    const result = scanRequestSchema.safeParse({
-      answers: {
-        processes: [],
-        operations: [],
-        documents: [],
-        communication: [],
-      },
-      companySize: "1-50",
-      area: "it",
-      ...validBase,
-    });
-    expect(result.success).toBe(true);
-  });
-
-  it("rejects invalid process values", () => {
-    const result = scanRequestSchema.safeParse({
-      answers: {
-        processes: ["invalid_value"],
-        operations: [],
-        documents: [],
-        communication: [],
-      },
-      companySize: "1-50",
-      area: "it",
-      ...validBase,
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects invalid company size", () => {
-    const result = scanRequestSchema.safeParse({
-      answers: {
-        processes: [],
-        operations: [],
-        documents: [],
-        communication: [],
-      },
-      companySize: "10000",
-      area: "it",
-      ...validBase,
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects invalid area", () => {
-    const result = scanRequestSchema.safeParse({
-      answers: {
-        processes: [],
-        operations: [],
-        documents: [],
-        communication: [],
-      },
-      companySize: "1-50",
-      area: "invalid",
-      ...validBase,
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("truncates problemText at 500 chars", () => {
-    const result = scanRequestSchema.safeParse({
-      answers: {
-        processes: [],
-        operations: [],
-        documents: [],
-        communication: [],
-      },
-      problemText: "a".repeat(501),
-      companySize: "1-50",
-      area: "it",
-      ...validBase,
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects missing companySize", () => {
-    const result = scanRequestSchema.safeParse({
-      answers: {
-        processes: [],
-        operations: [],
-        documents: [],
-        communication: [],
-      },
-      area: "it",
-      ...validBase,
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects missing name", () => {
-    const result = scanRequestSchema.safeParse({
-      answers: {
-        processes: [],
-        operations: [],
-        documents: [],
-        communication: [],
-      },
-      companySize: "1-50",
-      area: "it",
-      company: "Test",
-      email: "a@b.com",
-      lgpdConsent: true,
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects lgpdConsent=false", () => {
-    const result = scanRequestSchema.safeParse({
-      answers: {
-        processes: [],
-        operations: [],
-        documents: [],
-        communication: [],
-      },
-      companySize: "1-50",
-      area: "it",
-      name: "Ana",
-      company: "Test",
-      email: "ana@test.com",
-      lgpdConsent: false,
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects invalid email in scan", () => {
-    const result = scanRequestSchema.safeParse({
-      answers: {
-        processes: [],
-        operations: [],
-        documents: [],
-        communication: [],
-      },
-      companySize: "1-50",
-      area: "it",
-      name: "Ana",
-      company: "Test",
-      email: "not-an-email",
-      lgpdConsent: true,
-    });
-    expect(result.success).toBe(false);
-  });
-});
+import { leadRequestSchema } from "@/lib/validation";
 
 describe("leadRequestSchema", () => {
-  it("accepts valid lead", () => {
-    const result = leadRequestSchema.safeParse({
-      name: "João Silva",
-      company: "Empresa XYZ",
-      email: "joao@empresa.com",
-      whatsapp: "11999999999",
-      consent: true,
-      resultId: "abc123",
-    });
-    expect(result.success).toBe(true);
-  });
+  const validLead = {
+    fullName: "João Silva",
+    company: "Empresa XYZ",
+    email: "joao@empresa.com",
+    phone: "11999999999",
+    jobTitle: "Diretor de TI",
+    companySize: "medium" as const,
+    motivator: "new-technologies" as const,
+    sapModules: ["sap-s4hana", "sap-analytics"],
+    challenges: "digital-transformation" as const,
+    demoInterest: true,
+    techHelp: false,
+    consent: true as const,
+  };
 
-  it("accepts lead without whatsapp", () => {
-    const result = leadRequestSchema.safeParse({
-      name: "Maria",
-      company: "ACME",
-      email: "maria@acme.com",
-      consent: true,
-      resultId: "def456",
-    });
+  it("accepts valid lead", () => {
+    const result = leadRequestSchema.safeParse(validLead);
     expect(result.success).toBe(true);
   });
 
   it("rejects consent=false", () => {
     const result = leadRequestSchema.safeParse({
-      name: "Ana",
-      company: "Test",
-      email: "ana@test.com",
+      ...validLead,
       consent: false,
-      resultId: "xyz",
     });
     expect(result.success).toBe(false);
   });
 
   it("rejects invalid email", () => {
     const result = leadRequestSchema.safeParse({
-      name: "Pedro",
-      company: "Test",
+      ...validLead,
       email: "not-an-email",
-      consent: true,
-      resultId: "xyz",
     });
     expect(result.success).toBe(false);
   });
 
-  it("rejects short name", () => {
+  it("rejects short fullName", () => {
     const result = leadRequestSchema.safeParse({
-      name: "A",
-      company: "Test",
-      email: "a@test.com",
-      consent: true,
-      resultId: "xyz",
+      ...validLead,
+      fullName: "A",
     });
     expect(result.success).toBe(false);
   });
 
-  it("rejects missing resultId", () => {
+  it("rejects short phone", () => {
     const result = leadRequestSchema.safeParse({
-      name: "Ana",
-      company: "Test",
-      email: "ana@test.com",
-      consent: true,
+      ...validLead,
+      phone: "123",
     });
     expect(result.success).toBe(false);
   });
-});
 
-describe("llmOutputSchema", () => {
-  it("accepts valid LLM output", () => {
-    const result = llmOutputSchema.safeParse({
-      score: 65,
-      level: "HIGH",
-      signals: ["Signal 1", "Signal 2"],
-      automations: [
-        {
-          title: "Auto 1",
-          rationale: "Reason 1",
-          first_step: "Step 1",
-          sap_solution: "SAP Build Process Automation",
-        },
-        {
-          title: "Auto 2",
-          rationale: "Reason 2",
-          first_step: "Step 2",
-          sap_solution: "SAP Integration Suite",
-        },
-        {
-          title: "Auto 3",
-          rationale: "Reason 3",
-          first_step: "Step 3",
-          sap_solution: "SAP Analytics Cloud",
-        },
-      ],
-      impacts: ["Impact 1", "Impact 2", "Impact 3"],
-      executive_summary: "Summary text here.",
+  it("rejects invalid companySize", () => {
+    const result = leadRequestSchema.safeParse({
+      ...validLead,
+      companySize: "invalid",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects invalid motivator", () => {
+    const result = leadRequestSchema.safeParse({
+      ...validLead,
+      motivator: "invalid",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects empty sapModules", () => {
+    const result = leadRequestSchema.safeParse({
+      ...validLead,
+      sapModules: [],
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects invalid sapModule value", () => {
+    const result = leadRequestSchema.safeParse({
+      ...validLead,
+      sapModules: ["invalid-module"],
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects invalid challenges", () => {
+    const result = leadRequestSchema.safeParse({
+      ...validLead,
+      challenges: "invalid",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects missing jobTitle", () => {
+    const result = leadRequestSchema.safeParse({
+      ...validLead,
+      jobTitle: "",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts all valid company sizes", () => {
+    for (const size of ["startup", "small", "medium", "large", "enterprise"]) {
+      const result = leadRequestSchema.safeParse({
+        ...validLead,
+        companySize: size,
+      });
+      expect(result.success).toBe(true);
+    }
+  });
+
+  it("accepts all valid challenges", () => {
+    for (const challenge of [
+      "digital-transformation",
+      "process-optimization",
+      "data-analysis",
+      "cloud-migration",
+      "supply-chain",
+      "talent-management",
+      "health-safety-environment",
+      "other",
+    ]) {
+      const result = leadRequestSchema.safeParse({
+        ...validLead,
+        challenges: challenge,
+      });
+      expect(result.success).toBe(true);
+    }
+  });
+
+  it("accepts techHelpText when techHelp is true", () => {
+    const result = leadRequestSchema.safeParse({
+      ...validLead,
+      techHelp: true,
+      techHelpText: "Preciso de ajuda com infraestrutura de rede",
     });
     expect(result.success).toBe(true);
   });
 
-  it("rejects too few automations", () => {
-    const result = llmOutputSchema.safeParse({
-      score: 40,
-      level: "MEDIUM",
-      signals: ["Signal 1", "Signal 2"],
-      automations: [
-        {
-          title: "Auto 1",
-          rationale: "Reason 1",
-          first_step: "Step 1",
-          sap_solution: "SAP Signavio",
-        },
-      ],
-      impacts: ["Impact 1", "Impact 2"],
-      executive_summary: "Summary.",
+  it("accepts empty techHelpText", () => {
+    const result = leadRequestSchema.safeParse({
+      ...validLead,
+      techHelp: false,
+      techHelpText: "",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects techHelpText longer than 500 chars", () => {
+    const result = leadRequestSchema.safeParse({
+      ...validLead,
+      techHelp: true,
+      techHelpText: "a".repeat(501),
     });
     expect(result.success).toBe(false);
   });
 
-  it("rejects too few signals", () => {
-    const result = llmOutputSchema.safeParse({
-      score: 30,
-      level: "MEDIUM",
-      signals: ["Only one"],
-      automations: [
-        {
-          title: "A1",
-          rationale: "R1",
-          first_step: "S1",
-          sap_solution: "SAP Build Process Automation",
-        },
-        {
-          title: "A2",
-          rationale: "R2",
-          first_step: "S2",
-          sap_solution: "SAP Integration Suite",
-        },
-        {
-          title: "A3",
-          rationale: "R3",
-          first_step: "S3",
-          sap_solution: "SAP Analytics Cloud",
-        },
-      ],
-      impacts: ["I1", "I2"],
-      executive_summary: "Summary.",
-    });
-    expect(result.success).toBe(false);
+  it("defaults techHelpText to empty string when omitted", () => {
+    const result = leadRequestSchema.safeParse(validLead);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.techHelpText).toBe("");
+    }
   });
 
-  it("rejects missing executive_summary", () => {
-    const result = llmOutputSchema.safeParse({
-      signals: ["S1", "S2"],
-      automations: [
-        {
-          title: "A1",
-          rationale: "R1",
-          first_step: "S1",
-          sap_solution: "SAP Build Process Automation",
-        },
-        {
-          title: "A2",
-          rationale: "R2",
-          first_step: "S2",
-          sap_solution: "SAP Integration Suite",
-        },
-        {
-          title: "A3",
-          rationale: "R3",
-          first_step: "S3",
-          sap_solution: "SAP Analytics Cloud",
-        },
-      ],
-      impacts: ["I1", "I2"],
-    });
-    expect(result.success).toBe(false);
+  it("accepts all valid SAP modules", () => {
+    for (const mod of [
+      "sap-s4hana",
+      "sap-s4hana-public",
+      "sap-analytics",
+      "sap-successfactors",
+      "sap-ariba",
+      "sap-concur",
+      "sap-fieldglass",
+      "sap-ehs",
+      "sap-btp",
+      "sap-joule",
+    ]) {
+      const result = leadRequestSchema.safeParse({
+        ...validLead,
+        sapModules: [mod],
+      });
+      expect(result.success).toBe(true);
+    }
   });
 });

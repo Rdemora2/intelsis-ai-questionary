@@ -42,33 +42,21 @@ export async function POST(request: NextRequest) {
 
     const data = validation.data;
 
-    const existingResult = await prisma.scanResult.findUnique({
-      where: { id: data.resultId },
-      include: { lead: true },
-    });
-
-    if (!existingResult) {
-      return NextResponse.json(
-        { error: "Resultado não encontrado." },
-        { status: 404 },
-      );
-    }
-
-    if (existingResult.lead) {
-      return NextResponse.json(
-        { error: "Lead já registrado para este diagnóstico." },
-        { status: 409 },
-      );
-    }
-
     const lead = await prisma.lead.create({
       data: {
-        name: sanitizeText(data.name, 100),
+        fullName: sanitizeText(data.fullName, 100),
         company: sanitizeText(data.company, 100),
         email: sanitizeText(data.email, 200),
-        whatsapp: data.whatsapp ? sanitizeText(data.whatsapp, 20) : null,
+        phone: sanitizeText(data.phone, 20),
+        jobTitle: sanitizeText(data.jobTitle, 100),
+        companySize: data.companySize,
+        motivator: data.motivator,
+        sapModules: JSON.stringify(data.sapModules),
+        challenges: data.challenges,
+        demoInterest: data.demoInterest,
+        techHelp: data.techHelp,
+        techHelpText: data.techHelpText || null,
         consent: data.consent,
-        resultId: data.resultId,
       },
     });
 

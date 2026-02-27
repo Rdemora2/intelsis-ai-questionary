@@ -1,5 +1,5 @@
 import Link from "next/link";
-import ScanForm from "@/components/ScanForm";
+import LeadForm from "@/components/LeadForm";
 
 export default function ScanPage() {
   return (
@@ -13,8 +13,14 @@ export default function ScanPage() {
         </Link>
       </div>
       <main className="mx-auto w-full max-w-lg px-4 py-4">
-        <ScanForm />
+        <LeadForm />
       </main>
+
+      {/* Rodapé */}
+      <footer className="text-center py-8 text-xs text-surface-500 space-y-1">
+        <p>Grupo Intelsis • Oportunidades SAP</p>
+        <p>grupointelsis.com.br</p>
+      </footer>
     </div>
   );
 }

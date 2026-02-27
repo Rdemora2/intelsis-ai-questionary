@@ -48,7 +48,7 @@ export default function PrivacyPage() {
                 2. Dados pessoais coletados
               </h2>
               <p className="mb-2">
-                Para realizar o diagnóstico, coletamos obrigatoriamente:
+                Para realizar o cadastro, coletamos obrigatoriamente:
               </p>
               <ul className="list-disc list-inside space-y-1 text-surface-400 ml-2">
                 <li>
@@ -63,28 +63,56 @@ export default function PrivacyPage() {
                   <strong className="text-surface-300">
                     E-mail corporativo
                   </strong>{" "}
-                  — canal de contato e envio de resultados
+                  — canal de contato
+                </li>
+                <li>
+                  <strong className="text-surface-300">Telefone</strong> — canal
+                  de contato adicional
+                </li>
+                <li>
+                  <strong className="text-surface-300">Cargo/Posição</strong> —
+                  contexto profissional
                 </li>
                 <li>
                   <strong className="text-surface-300">Porte da empresa</strong>{" "}
-                  (faixa de colaboradores) — personalização da análise
+                  (faixa de colaboradores) — segmentação
                 </li>
                 <li>
-                  <strong className="text-surface-300">Área de atuação</strong>{" "}
-                  — personalização da análise
+                  <strong className="text-surface-300">Motivador</strong> —
+                  contexto de interesse em soluções SAP
                 </li>
                 <li>
                   <strong className="text-surface-300">
-                    Respostas ao questionário
+                    Módulos SAP de interesse
                   </strong>{" "}
-                  (seleção de dores operacionais) — geração do diagnóstico
+                  — personalização de contato
+                </li>
+                <li>
+                  <strong className="text-surface-300">
+                    Principal desafio da empresa
+                  </strong>{" "}
+                  — entendimento de necessidades
+                </li>
+                <li>
+                  <strong className="text-surface-300">
+                    Interesse em demonstração
+                  </strong>{" "}
+                  — direcionamento comercial
+                </li>
+                <li>
+                  <strong className="text-surface-300">
+                    Necessidade de ajuda com tecnologia
+                  </strong>{" "}
+                  — direcionamento técnico
                 </li>
               </ul>
               <p className="mt-2">
                 Opcionalmente, você pode fornecer uma{" "}
-                <strong className="text-surface-300">descrição textual</strong>{" "}
-                de um problema operacional (máx. 500 caracteres) para enriquecer
-                a análise.
+                <strong className="text-surface-300">
+                  descrição textual
+                </strong>{" "}
+                de um problema de tecnologia (máx. 500 caracteres) para que
+                possamos oferecer suporte mais direcionado.
               </p>
             </div>
 
@@ -102,14 +130,17 @@ export default function PrivacyPage() {
               <p>As finalidades específicas são:</p>
               <ul className="list-disc list-inside space-y-1 text-surface-400 ml-2 mt-1">
                 <li>
-                  Geração do diagnóstico de automação com recomendações de
+                  Envio de oportunidades, novidades e conteúdos relacionados a
                   soluções SAP
                 </li>
                 <li>
-                  Eventual contato comercial por parte da equipe Intelsis para
-                  aprofundamento do diagnóstico
+                  Contato comercial por parte da equipe do Grupo Intelsis para
+                  apresentação de soluções relevantes
                 </li>
-                <li>Melhoria contínua da ferramenta de diagnóstico</li>
+                <li>
+                  Direcionamento técnico em caso de necessidade informada pelo
+                  titular
+                </li>
               </ul>
             </div>
 
@@ -117,25 +148,9 @@ export default function PrivacyPage() {
               <h2 className="font-semibold text-white mb-2">
                 4. Compartilhamento de dados com terceiros
               </h2>
-              <p className="mb-2">
-                Para gerar o diagnóstico, as respostas ao questionário (sem
-                dados pessoais identificáveis) são enviadas à API Google Gemini
-                (Google LLC) exclusivamente para processamento da análise. A
-                Google não retém os dados enviados via API para fins de
-                treinamento de modelos, conforme os{" "}
-                <a
-                  href="https://ai.google.dev/terms"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-brand-400 underline hover:text-brand-300"
-                >
-                  Termos de Serviço da API Gemini
-                </a>
-                .
-              </p>
               <p>
-                Os dados pessoais (nome, empresa, e-mail) são armazenados em
-                banco de dados PostgreSQL hospedado pela{" "}
+                Os dados pessoais são armazenados em banco de dados PostgreSQL
+                hospedado pela{" "}
                 <strong className="text-surface-300">Neon</strong> (neon.tech),
                 com infraestrutura na região sa-east-1 (São Paulo). Não
                 vendemos, alugamos ou transferimos seus dados pessoais a
@@ -216,7 +231,7 @@ export default function PrivacyPage() {
               <p>
                 O fornecimento dos dados pessoais e o envio do formulário
                 dependem do consentimento explícito do titular, manifestado por
-                meio de checkbox obrigatório. Sem o consentimento, o diagnóstico
+                meio de checkbox obrigatório. Sem o consentimento, o cadastro
                 não pode ser realizado. O consentimento pode ser revogado a
                 qualquer momento mediante solicitação ao controlador.
               </p>

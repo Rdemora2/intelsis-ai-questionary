@@ -1,32 +1,78 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import {
+  SAP_MODULES,
+  COMPANY_SIZES,
+  MOTIVATORS,
+  CHALLENGES,
+} from "@/types";
+import type { LeadFormData } from "@/types";
 
-interface LeadFormProps {
-  resultId: string;
-}
+export default function LeadForm() {
+  const router = useRouter();
+  const [formData, setFormData] = useState<LeadFormData>({
+    fullName: "",
+    company: "",
+    email: "",
+    phone: "",
+    jobTitle: "",
+    companySize: "",
+    motivator: "",
+    sapModules: [],
+    challenges: "",
+    demoInterest: false,
+    techHelp: false,
+    techHelpText: "",
+  });
 
-export default function LeadForm({ resultId }: LeadFormProps) {
-  const [name, setName] = useState("");
-  const [company, setCompany] = useState("");
-  const [email, setEmail] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
   const [consent, setConsent] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [skipped, setSkipped] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof LeadFormData | "consent", string>>>({});
 
-  const isValid =
-    name.trim().length >= 2 &&
-    company.trim().length >= 2 &&
-    email.includes("@") &&
-    consent;
+  const validate = (): boolean => {
+    const errs: Partial<Record<keyof LeadFormData | "consent", string>> = {};
+
+    if (!formData.fullName.trim() || formData.fullName.trim().length < 2)
+      errs.fullName = "Nome completo é obrigatório";
+    if (!formData.company.trim() || formData.company.trim().length < 2)
+      errs.company = "Empresa é obrigatória";
+    if (!formData.email.trim()) {
+      errs.email = "Email é obrigatório";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errs.email = "Email inválido";
+    }
+    if (!formData.phone.trim() || formData.phone.trim().length < 8)
+      errs.phone = "Telefone é obrigatório";
+    if (!formData.jobTitle.trim() || formData.jobTitle.trim().length < 2)
+      errs.jobTitle = "Cargo é obrigatório";
+    if (!formData.companySize)
+      errs.companySize = "Tamanho da empresa é obrigatório";
+    if (!formData.motivator) errs.motivator = "Selecione um motivador";
+    if (formData.sapModules.length === 0)
+      errs.sapModules = "Selecione pelo menos um módulo";
+    if (!formData.challenges) errs.challenges = "Selecione um desafio";
+    if (!consent) errs.consent = "Consentimento é obrigatório";
+
+    setFieldErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleModuleToggle = (moduleId: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      sapModules: prev.sapModules.includes(moduleId)
+        ? prev.sapModules.filter((id) => id !== moduleId)
+        : [...prev.sapModules, moduleId],
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isValid || loading) return;
+    if (!validate() || loading) return;
 
     setLoading(true);
     setError("");
@@ -35,200 +81,437 @@ export default function LeadForm({ resultId }: LeadFormProps) {
       const response = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
-          company: company.trim(),
-          email: email.trim(),
-          whatsapp: whatsapp.trim() || undefined,
-          consent,
-          resultId,
-        }),
+        body: JSON.stringify({ ...formData, consent }),
       });
 
       if (!response.ok) {
         const data = await response.json().catch(() => null);
-        throw new Error(data?.error || "Erro ao enviar dados.");
+        throw new Error(data?.error || "Erro ao enviar formulário.");
       }
 
-      setSubmitted(true);
+      router.push("/thank-you");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro inesperado.");
+      setError(
+        err instanceof Error ? err.message : "Erro inesperado. Tente novamente.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  if (skipped) {
-    return (
-      <div className="text-center py-6 text-sm text-surface-400">
-        <p>
-          Obrigado por participar! Visite nosso stand para conversar com um
-          especialista.
-        </p>
-        <Link
-          href="/"
-          className="text-brand-400 hover:text-brand-300 mt-2 inline-block"
-        >
-          ← Novo diagnóstico
-        </Link>
-      </div>
-    );
-  }
-
-  if (submitted) {
-    return (
-      <div className="rounded-xl border border-brand-500/30 bg-brand-500/10 p-6 text-center">
-        <div className="text-3xl mb-3">✉️</div>
-        <h3 className="font-semibold text-brand-400 mb-1">
-          Dados registrados!
-        </h3>
-        <p className="text-sm text-surface-300">
-          Um especialista Intelsis entrará em contato para aprofundar o
-          diagnóstico e discutir as soluções SAP recomendadas.
-        </p>
-        <Link
-          href="/"
-          className="text-brand-400 hover:text-brand-300 text-sm mt-4 inline-block"
-        >
-          ← Novo diagnóstico
-        </Link>
-      </div>
-    );
-  }
-
   return (
-    <div className="rounded-xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-5">
-      <div className="text-center mb-4">
-        <h3 className="font-semibold text-white">
-          Quer aprofundar este diagnóstico?
-        </h3>
-        <p className="text-xs text-surface-400 mt-1">
-          Deixe seus dados para um especialista Intelsis × SAP entrar em contato
+    <form onSubmit={handleSubmit} className="space-y-6 pb-8">
+      <div className="text-center mb-2">
+        <h1 className="text-xl font-bold text-white">
+          Cadastro — Grupo Intelsis
+        </h1>
+        <p className="text-sm text-surface-400 mt-1">
+          Cadastre-se para receber oportunidades SAP exclusivas
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <div>
-          <label
-            htmlFor="leadName"
-            className="block text-sm font-medium text-surface-300 mb-1"
-          >
-            Nome
-          </label>
-          <input
-            id="leadName"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            maxLength={100}
-            required
-            className="w-full rounded-lg border border-surface-600 bg-surface-800 px-3 py-2.5 text-sm text-white focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
-          />
-        </div>
+      {/* Seção 1: Informações Básicas */}
+      <fieldset className="rounded-xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-5">
+        <legend className="px-2 text-sm font-semibold text-brand-400 uppercase tracking-wide">
+          Informações Básicas
+        </legend>
+        <div className="mt-2 space-y-4">
+          {/* Nome Completo */}
+          <div>
+            <label
+              htmlFor="fullName"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
+              Nome Completo <span className="text-red-400">*</span>
+            </label>
+            <input
+              id="fullName"
+              type="text"
+              value={formData.fullName}
+              onChange={(e) =>
+                setFormData({ ...formData, fullName: e.target.value })
+              }
+              maxLength={100}
+              placeholder="Seu nome completo"
+              className={`w-full rounded-lg border ${fieldErrors.fullName ? "border-red-500" : "border-surface-600"} bg-surface-800 px-3 py-2.5 text-sm text-white placeholder:text-surface-500 focus:border-brand-500 focus:ring-1 focus:ring-brand-500`}
+            />
+            {fieldErrors.fullName && (
+              <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
+                ⚠ {fieldErrors.fullName}
+              </p>
+            )}
+          </div>
 
-        <div>
-          <label
-            htmlFor="leadCompany"
-            className="block text-sm font-medium text-surface-300 mb-1"
-          >
-            Empresa
-          </label>
-          <input
-            id="leadCompany"
-            type="text"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-            maxLength={100}
-            required
-            className="w-full rounded-lg border border-surface-600 bg-surface-800 px-3 py-2.5 text-sm text-white focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
-          />
-        </div>
+          {/* Empresa */}
+          <div>
+            <label
+              htmlFor="company"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
+              Empresa <span className="text-red-400">*</span>
+            </label>
+            <input
+              id="company"
+              type="text"
+              value={formData.company}
+              onChange={(e) =>
+                setFormData({ ...formData, company: e.target.value })
+              }
+              maxLength={100}
+              placeholder="Nome da sua empresa"
+              className={`w-full rounded-lg border ${fieldErrors.company ? "border-red-500" : "border-surface-600"} bg-surface-800 px-3 py-2.5 text-sm text-white placeholder:text-surface-500 focus:border-brand-500 focus:ring-1 focus:ring-brand-500`}
+            />
+            {fieldErrors.company && (
+              <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
+                ⚠ {fieldErrors.company}
+              </p>
+            )}
+          </div>
 
-        <div>
-          <label
-            htmlFor="leadEmail"
-            className="block text-sm font-medium text-surface-300 mb-1"
-          >
-            E-mail
-          </label>
-          <input
-            id="leadEmail"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            maxLength={200}
-            required
-            className="w-full rounded-lg border border-surface-600 bg-surface-800 px-3 py-2.5 text-sm text-white focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
-          />
-        </div>
+          {/* Email */}
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
+              Email <span className="text-red-400">*</span>
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+              maxLength={200}
+              placeholder="seu.email@empresa.com"
+              className={`w-full rounded-lg border ${fieldErrors.email ? "border-red-500" : "border-surface-600"} bg-surface-800 px-3 py-2.5 text-sm text-white placeholder:text-surface-500 focus:border-brand-500 focus:ring-1 focus:ring-brand-500`}
+            />
+            {fieldErrors.email && (
+              <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
+                ⚠ {fieldErrors.email}
+              </p>
+            )}
+          </div>
 
-        <div>
-          <label
-            htmlFor="leadWhatsapp"
-            className="block text-sm font-medium text-surface-300 mb-1"
-          >
-            WhatsApp{" "}
-            <span className="text-surface-500 font-normal">(opcional)</span>
-          </label>
-          <input
-            id="leadWhatsapp"
-            type="tel"
-            value={whatsapp}
-            onChange={(e) => setWhatsapp(e.target.value)}
-            maxLength={20}
-            placeholder="(11) 99999-9999"
-            className="w-full rounded-lg border border-surface-600 bg-surface-800 px-3 py-2.5 text-sm text-white placeholder:text-surface-500 focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
-          />
-        </div>
+          {/* Telefone */}
+          <div>
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
+              Telefone <span className="text-red-400">*</span>
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              value={formData.phone}
+              onChange={(e) =>
+                setFormData({ ...formData, phone: e.target.value })
+              }
+              maxLength={20}
+              placeholder="(11) 99999-9999"
+              className={`w-full rounded-lg border ${fieldErrors.phone ? "border-red-500" : "border-surface-600"} bg-surface-800 px-3 py-2.5 text-sm text-white placeholder:text-surface-500 focus:border-brand-500 focus:ring-1 focus:ring-brand-500`}
+            />
+            {fieldErrors.phone && (
+              <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
+                ⚠ {fieldErrors.phone}
+              </p>
+            )}
+          </div>
 
-        <label className="flex items-start gap-3 cursor-pointer pt-2">
+          {/* Cargo */}
+          <div>
+            <label
+              htmlFor="jobTitle"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
+              Cargo/Posição <span className="text-red-400">*</span>
+            </label>
+            <input
+              id="jobTitle"
+              type="text"
+              value={formData.jobTitle}
+              onChange={(e) =>
+                setFormData({ ...formData, jobTitle: e.target.value })
+              }
+              maxLength={100}
+              placeholder="Ex: Diretor de TI, Gerente de Operações"
+              className={`w-full rounded-lg border ${fieldErrors.jobTitle ? "border-red-500" : "border-surface-600"} bg-surface-800 px-3 py-2.5 text-sm text-white placeholder:text-surface-500 focus:border-brand-500 focus:ring-1 focus:ring-brand-500`}
+            />
+            {fieldErrors.jobTitle && (
+              <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
+                ⚠ {fieldErrors.jobTitle}
+              </p>
+            )}
+          </div>
+        </div>
+      </fieldset>
+
+      {/* Seção 2: Informações da Empresa */}
+      <fieldset className="rounded-xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-5">
+        <legend className="px-2 text-sm font-semibold text-brand-400 uppercase tracking-wide">
+          Informações da Empresa
+        </legend>
+        <div className="mt-2 space-y-4">
+          <div>
+            <label
+              htmlFor="companySize"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
+              Tamanho da Empresa <span className="text-red-400">*</span>
+            </label>
+            <select
+              id="companySize"
+              value={formData.companySize}
+              onChange={(e) =>
+                setFormData({ ...formData, companySize: e.target.value })
+              }
+              className={`w-full rounded-lg border ${fieldErrors.companySize ? "border-red-500" : "border-surface-600"} bg-surface-800 px-3 py-2.5 text-sm text-white focus:border-brand-500 focus:ring-1 focus:ring-brand-500`}
+            >
+              <option value="">Selecione o tamanho da empresa</option>
+              {COMPANY_SIZES.map((size) => (
+                <option key={size.value} value={size.value}>
+                  {size.label}
+                </option>
+              ))}
+            </select>
+            {fieldErrors.companySize && (
+              <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
+                ⚠ {fieldErrors.companySize}
+              </p>
+            )}
+          </div>
+        </div>
+      </fieldset>
+
+      {/* Seção 3: Motivador */}
+      <fieldset className="rounded-xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-5">
+        <legend className="px-2 text-sm font-semibold text-brand-400 uppercase tracking-wide">
+          O que o motiva?
+        </legend>
+        <div className="mt-2 space-y-4">
+          <div>
+            <label
+              htmlFor="motivator"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
+              Qual é seu principal motivador? <span className="text-red-400">*</span>
+            </label>
+            <select
+              id="motivator"
+              value={formData.motivator}
+              onChange={(e) =>
+                setFormData({ ...formData, motivator: e.target.value })
+              }
+              className={`w-full rounded-lg border ${fieldErrors.motivator ? "border-red-500" : "border-surface-600"} bg-surface-800 px-3 py-2.5 text-sm text-white focus:border-brand-500 focus:ring-1 focus:ring-brand-500`}
+            >
+              <option value="">Selecione seu motivador</option>
+              {MOTIVATORS.map((m) => (
+                <option key={m.value} value={m.value}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+            {fieldErrors.motivator && (
+              <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
+                ⚠ {fieldErrors.motivator}
+              </p>
+            )}
+          </div>
+        </div>
+      </fieldset>
+
+      {/* Seção 4: Interesse em SAP */}
+      <fieldset className="rounded-xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-5">
+        <legend className="px-2 text-sm font-semibold text-brand-400 uppercase tracking-wide">
+          Seu Interesse em SAP
+        </legend>
+        <div className="mt-2 space-y-5">
+          {/* Módulos SAP */}
+          <div>
+            <label className="block text-sm font-medium text-surface-300 mb-3">
+              Módulos SAP de Interesse <span className="text-red-400">*</span>
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {SAP_MODULES.map((module) => (
+                <label
+                  key={module.id}
+                  className="flex items-center gap-3 cursor-pointer group"
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.sapModules.includes(module.id)}
+                    onChange={() => handleModuleToggle(module.id)}
+                    className="h-5 w-5 rounded border-surface-600 bg-surface-800 text-brand-500 focus:ring-brand-500 focus:ring-offset-surface-900 cursor-pointer"
+                  />
+                  <span className="text-sm text-surface-300 group-hover:text-white transition-colors">
+                    {module.label}
+                  </span>
+                </label>
+              ))}
+            </div>
+            {fieldErrors.sapModules && (
+              <p className="text-xs text-red-400 mt-2 flex items-center gap-1">
+                ⚠ {fieldErrors.sapModules}
+              </p>
+            )}
+          </div>
+
+          {/* Desafios */}
+          <div>
+            <label
+              htmlFor="challenges"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
+              Principal Desafio da Sua Empresa{" "}
+              <span className="text-red-400">*</span>
+            </label>
+            <select
+              id="challenges"
+              value={formData.challenges}
+              onChange={(e) =>
+                setFormData({ ...formData, challenges: e.target.value })
+              }
+              className={`w-full rounded-lg border ${fieldErrors.challenges ? "border-red-500" : "border-surface-600"} bg-surface-800 px-3 py-2.5 text-sm text-white focus:border-brand-500 focus:ring-1 focus:ring-brand-500`}
+            >
+              <option value="">Selecione o principal desafio</option>
+              {CHALLENGES.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+            {fieldErrors.challenges && (
+              <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
+                ⚠ {fieldErrors.challenges}
+              </p>
+            )}
+          </div>
+
+          {/* Interesse em Demonstração */}
+          <label className="flex items-center gap-3 cursor-pointer pt-1">
+            <input
+              type="checkbox"
+              checked={formData.demoInterest}
+              onChange={(e) =>
+                setFormData({ ...formData, demoInterest: e.target.checked })
+              }
+              className="h-5 w-5 rounded border-surface-600 bg-surface-800 text-brand-500 focus:ring-brand-500 focus:ring-offset-surface-900 cursor-pointer"
+            />
+            <span className="text-sm text-surface-300">
+              Tenho interesse em uma demonstração ao vivo
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
+      {/* Seção Destaque: Ajuda com Tecnologia */}
+      <div className="rounded-xl border-2 border-brand-500/30 bg-gradient-to-r from-brand-500/10 to-brand-400/5 p-5 space-y-4">
+        <label className="flex items-start gap-3 cursor-pointer">
           <input
             type="checkbox"
-            checked={consent}
-            onChange={(e) => setConsent(e.target.checked)}
-            required
-            className="mt-0.5 h-5 w-5 rounded border-surface-600 bg-surface-800 text-brand-500 focus:ring-brand-500 focus:ring-offset-surface-900 cursor-pointer"
+            checked={formData.techHelp}
+            onChange={(e) =>
+              setFormData({ ...formData, techHelp: e.target.checked, techHelpText: e.target.checked ? formData.techHelpText : "" })
+            }
+            className="mt-0.5 h-5 w-5 rounded border-surface-600 bg-surface-800 text-brand-500 focus:ring-brand-500 focus:ring-offset-surface-900 cursor-pointer flex-shrink-0"
           />
-          <span className="text-xs text-surface-400 leading-relaxed">
-            Concordo em ser contatado(a) sobre este diagnóstico, conforme a{" "}
-            <Link
-              href="/privacy"
-              className="text-brand-400 underline"
-              target="_blank"
-            >
-              Política de Privacidade
-            </Link>
-            .
-          </span>
+          <div>
+            <span className="text-sm font-semibold text-white block">
+              Além de temas SAP, tenho algum problema com Tecnologia que preciso
+              de ajuda?
+            </span>
+            <span className="text-xs text-surface-400 mt-1 block">
+              Marque esta opção se tiver dúvidas ou desafios tecnológicos que
+              não estão relacionados aos módulos SAP acima.
+            </span>
+          </div>
         </label>
 
-        {error && (
-          <div className="rounded-lg bg-red-900/30 border border-red-500/30 px-3 py-2 text-xs text-red-400">
-            {error}
+        {formData.techHelp && (
+          <div className="pl-8">
+            <label
+              htmlFor="techHelpText"
+              className="block text-sm font-medium text-surface-300 mb-1"
+            >
+              Descreva seu problema ou necessidade
+            </label>
+            <textarea
+              id="techHelpText"
+              value={formData.techHelpText}
+              onChange={(e) =>
+                setFormData({ ...formData, techHelpText: e.target.value })
+              }
+              maxLength={500}
+              rows={3}
+              placeholder="Conte-nos brevemente sobre o problema de tecnologia que você enfrenta…"
+              className="w-full rounded-lg border border-surface-600 bg-surface-800 px-3 py-2.5 text-sm text-white placeholder:text-surface-500 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 resize-none"
+            />
+            <p className="text-xs text-surface-500 mt-1 text-right">
+              {formData.techHelpText.length}/500
+            </p>
           </div>
         )}
+      </div>
 
-        <div className="flex gap-3 pt-2">
-          <button
-            type="button"
-            onClick={() => setSkipped(true)}
-            className="flex-1 rounded-xl border border-surface-600 py-3 text-sm font-medium text-surface-400 hover:bg-surface-800 hover:text-surface-300 transition-colors"
+      {/* LGPD Consent */}
+      <label className="flex items-start gap-3 cursor-pointer px-1">
+        <input
+          type="checkbox"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          className={`mt-0.5 h-5 w-5 rounded ${fieldErrors.consent ? "border-red-500" : "border-surface-600"} bg-surface-800 text-brand-500 focus:ring-brand-500 focus:ring-offset-surface-900 cursor-pointer flex-shrink-0`}
+        />
+        <span className="text-xs text-surface-400 leading-relaxed">
+          Concordo em ser contatado(a) sobre este cadastro, conforme a{" "}
+          <Link
+            href="/privacy"
+            target="_blank"
+            className="text-brand-400 underline hover:text-brand-300"
           >
-            Pular
-          </button>
-          <button
-            type="submit"
-            disabled={!isValid || loading}
-            className={`flex-1 rounded-xl py-3 text-sm font-semibold transition-all ${
-              isValid && !loading
-                ? "bg-gradient-to-r from-brand-500 to-brand-400 text-white hover:shadow-lg hover:shadow-brand-500/25"
-                : "bg-surface-800 text-surface-600 cursor-not-allowed"
-            }`}
-          >
-            {loading ? "Enviando…" : "Enviar"}
-          </button>
+            Política de Privacidade
+          </Link>{" "}
+          e em conformidade com a LGPD (Lei nº 13.709/2018).{" "}
+          <span className="text-red-400">*</span>
+        </span>
+      </label>
+      {fieldErrors.consent && (
+        <p className="text-xs text-red-400 px-1 -mt-4 flex items-center gap-1">
+          ⚠ {fieldErrors.consent}
+        </p>
+      )}
+
+      {error && (
+        <div className="rounded-lg bg-red-900/30 border border-red-500/30 px-4 py-3 text-sm text-red-400">
+          {error}
         </div>
-      </form>
-    </div>
+      )}
+
+      {/* Botão de Envio */}
+      <button
+        type="submit"
+        disabled={loading}
+        className={`w-full rounded-xl py-4 text-base font-semibold transition-all ${
+          loading
+            ? "bg-surface-800 text-surface-600 cursor-not-allowed"
+            : "bg-gradient-to-r from-brand-500 to-brand-400 text-white hover:shadow-lg hover:shadow-brand-500/25 active:from-brand-600 active:to-brand-500"
+        }`}
+      >
+        {loading ? (
+          <span className="flex items-center justify-center gap-2">
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            Enviando…
+          </span>
+        ) : (
+          "Enviar Meu Cadastro"
+        )}
+      </button>
+
+      <p className="text-xs text-surface-500 text-center">
+        Seus dados serão utilizados apenas para contato relacionado a
+        oportunidades SAP pelo Grupo Intelsis.
+      </p>
+    </form>
   );
 }

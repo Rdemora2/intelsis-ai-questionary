@@ -5,9 +5,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Business Automation Radar",
+  title: "Grupo Intelsis — Oportunidades SAP",
   description:
-    "Descubra em 60s onde sua empresa perde eficiência — e o que já pode ser automatizado com IA.",
+    "Cadastre-se no Grupo Intelsis e receba oportunidades exclusivas em soluções SAP.",
   icons: {
     icon: [
       { url: "/ico/favicon.ico", sizes: "any" },
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  maximumScale: 5,
   themeColor: "#0a0f1a",
 };
 

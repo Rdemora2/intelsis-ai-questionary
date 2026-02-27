@@ -81,14 +81,14 @@ export default function HomePage() {
 
           <div className="space-y-3 mb-8">
             <h1 className="text-3xl font-bold text-white leading-tight sm:text-4xl tracking-tight">
-              Descubra em 60s quais
-              <span className="text-brand-400"> soluções SAP </span>
-              podem transformar sua operação
+              Cadastre-se no
+              <span className="text-brand-400"> Grupo Intelsis </span>
+              e receba oportunidades SAP
             </h1>
 
             <p className="text-surface-400 text-lg leading-relaxed">
-              Diagnóstico gratuito com recomendações personalizadas de
-              automação.
+              Preencha seus dados e fique por dentro de soluções e novidades SAP
+              com o Grupo Intelsis.
             </p>
           </div>
 
@@ -97,11 +97,11 @@ export default function HomePage() {
               href="/scan"
               className="inline-block w-full max-w-xs rounded-xl bg-gradient-to-r from-brand-500 to-brand-400 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 hover:from-brand-400 hover:to-brand-300 active:from-brand-600 active:to-brand-500 transition-all duration-200"
             >
-              Iniciar diagnóstico gratuito →
+              Preencher cadastro →
             </Link>
 
             <p className="text-xs text-surface-500">
-              Responda em 60 segundos e receba recomendações SAP personalizadas.
+              Leva menos de 2 minutos. Seus dados estão seguros.
             </p>
           </div>
         </div>
@@ -110,7 +110,7 @@ export default function HomePage() {
       <footer className="border-t border-surface-800 py-4 text-center text-xs text-surface-500">
         <Link
           href="/privacy"
-          className="hover:text-brand-400 transition-colors"
+          className="text-white hover:text-brand-400 transition-colors"
         >
           Política de Privacidade
         </Link>
@@ -119,7 +119,7 @@ export default function HomePage() {
           href="https://grupointelsis.com.br"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-surface-600 hover:text-brand-400 transition-colors"
+          className="text-white hover:text-brand-400 transition-colors"
         >
           Grupo Intelsis
         </a>

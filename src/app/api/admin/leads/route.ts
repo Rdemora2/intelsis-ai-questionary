@@ -10,14 +10,14 @@ export async function GET(request: NextRequest) {
   }
 
   const { searchParams } = new URL(request.url);
-  const level = searchParams.get("level");
+  const companySize = searchParams.get("companySize");
   const dateFrom = searchParams.get("dateFrom");
   const dateTo = searchParams.get("dateTo");
 
   const where: Record<string, unknown> = {};
 
-  if (level) {
-    where.level = level.toUpperCase();
+  if (companySize) {
+    where.companySize = companySize;
   }
 
   if (dateFrom || dateTo) {
@@ -31,29 +31,35 @@ export async function GET(request: NextRequest) {
     where.createdAt = createdAt;
   }
 
-  const results = await prisma.scanResult.findMany({
+  const leads = await prisma.lead.findMany({
     where,
-    include: { lead: true },
     orderBy: { createdAt: "desc" },
     take: 500,
   });
 
-  const formatted = results.map((r: (typeof results)[number]) => ({
-    id: r.id,
-    score: r.score,
-    level: r.level,
-    companySize: r.companySize,
-    area: r.area,
-    createdAt: r.createdAt.toISOString(),
-    lead: r.lead
-      ? {
-          name: r.lead.name,
-          company: r.lead.company,
-          email: r.lead.email,
-          whatsapp: r.lead.whatsapp,
-        }
-      : null,
-  }));
+  const formatted = leads.map((l: (typeof leads)[number]) => {
+    let sapModules: string[] = [];
+    try {
+      sapModules = JSON.parse(l.sapModules);
+    } catch {
+      sapModules = [];
+    }
+    return {
+      id: l.id,
+      fullName: l.fullName,
+      company: l.company,
+      email: l.email,
+      phone: l.phone,
+      jobTitle: l.jobTitle,
+      companySize: l.companySize,
+      motivator: l.motivator,
+      sapModules,
+      challenges: l.challenges,
+      demoInterest: l.demoInterest,
+      techHelp: l.techHelp,
+      createdAt: l.createdAt.toISOString(),
+    };
+  });
 
   return NextResponse.json({ results: formatted });
 }

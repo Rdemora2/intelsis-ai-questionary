@@ -19,14 +19,14 @@ export async function GET(request: NextRequest) {
   }
 
   const { searchParams } = new URL(request.url);
-  const level = searchParams.get("level");
+  const companySize = searchParams.get("companySize");
   const dateFrom = searchParams.get("dateFrom");
   const dateTo = searchParams.get("dateTo");
 
   const where: Record<string, unknown> = {};
 
-  if (level) {
-    where.level = level.toUpperCase();
+  if (companySize) {
+    where.companySize = companySize;
   }
 
   if (dateFrom || dateTo) {
@@ -40,39 +40,54 @@ export async function GET(request: NextRequest) {
     where.createdAt = createdAt;
   }
 
-  const results = await prisma.scanResult.findMany({
+  const leads = await prisma.lead.findMany({
     where,
-    include: { lead: true },
     orderBy: { createdAt: "desc" },
   });
 
   const headers = [
     "Data",
     "ID",
-    "Score",
-    "Nível",
-    "Porte",
-    "Área",
     "Nome",
     "Empresa",
     "E-mail",
-    "WhatsApp",
+    "Telefone",
+    "Cargo",
+    "Porte",
+    "Motivador",
+    "Módulos SAP",
+    "Desafio",
+    "Demo",
+    "Ajuda Tech",
+    "Detalhe Tech",
     "Consentimento",
   ];
 
-  const rows: string[][] = results.map((r: (typeof results)[number]) => [
-    r.createdAt.toISOString(),
-    r.id,
-    String(r.score),
-    r.level,
-    r.companySize || "",
-    r.area || "",
-    r.lead?.name || "",
-    r.lead?.company || "",
-    r.lead?.email || "",
-    r.lead?.whatsapp || "",
-    r.lead?.consent ? "Sim" : "",
-  ]);
+  const rows: string[][] = leads.map((l: (typeof leads)[number]) => {
+    let modules = "";
+    try {
+      modules = JSON.parse(l.sapModules).join("; ");
+    } catch {
+      modules = l.sapModules;
+    }
+    return [
+      l.createdAt.toISOString(),
+      l.id,
+      l.fullName,
+      l.company,
+      l.email,
+      l.phone,
+      l.jobTitle,
+      l.companySize,
+      l.motivator,
+      modules,
+      l.challenges,
+      l.demoInterest ? "Sim" : "Não",
+      l.techHelp ? "Sim" : "Não",
+      l.techHelpText || "",
+      l.consent ? "Sim" : "Não",
+    ];
+  });
 
   const csv =
     headers.map(escapeCSV).join(",") +
@@ -83,7 +98,7 @@ export async function GET(request: NextRequest) {
     status: 200,
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": `attachment; filename="bar-export-${new Date().toISOString().split("T")[0]}.csv"`,
+      "Content-Disposition": `attachment; filename="leads-export-${new Date().toISOString().split("T")[0]}.csv"`,
     },
   });
 }
