@@ -32,9 +32,6 @@ export default function AdminTable() {
 
   const [data, setData] = useState<LeadEntry[]>([]);
   const [loading, setLoading] = useState(false);
-  const [filterSize, setFilterSize] = useState("");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
 
   const getAuthHeader = useCallback(() => {
     const stored =
@@ -44,13 +41,8 @@ export default function AdminTable() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    const params = new URLSearchParams();
-    if (filterSize) params.set("companySize", filterSize);
-    if (dateFrom) params.set("dateFrom", dateFrom);
-    if (dateTo) params.set("dateTo", dateTo);
-
     try {
-      const res = await fetch(`/api/admin/leads?${params.toString()}`, {
+      const res = await fetch("/api/admin/leads", {
         headers: { Authorization: getAuthHeader() },
       });
 
@@ -67,7 +59,7 @@ export default function AdminTable() {
     } finally {
       setLoading(false);
     }
-  }, [filterSize, dateFrom, dateTo, getAuthHeader]);
+  }, [getAuthHeader]);
 
   useEffect(() => {
     if (authenticated) {
@@ -97,12 +89,7 @@ export default function AdminTable() {
   };
 
   const handleExport = async () => {
-    const params = new URLSearchParams();
-    if (filterSize) params.set("companySize", filterSize);
-    if (dateFrom) params.set("dateFrom", dateFrom);
-    if (dateTo) params.set("dateTo", dateTo);
-
-    const res = await fetch(`/api/admin/export?${params.toString()}`, {
+    const res = await fetch("/api/admin/export", {
       headers: { Authorization: getAuthHeader() },
     });
 
@@ -112,7 +99,7 @@ export default function AdminTable() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `leads-export-${new Date().toISOString().split("T")[0]}.csv`;
+    a.download = `leads-export-${new Date().toISOString().split("T")[0]}.xlsx`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -133,15 +120,16 @@ export default function AdminTable() {
               htmlFor="adminUser"
               className="block text-sm font-medium text-surface-300 mb-1"
             >
-              Usuário
+              E-mail
             </label>
             <input
               id="adminUser"
-              type="text"
+              type="email"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              placeholder="seu@email.com"
               required
-              className="w-full rounded-lg border border-surface-600 bg-surface-800 px-3 py-2.5 text-sm text-white focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+              className="w-full rounded-lg border border-surface-600 bg-surface-800 px-3 py-2.5 text-sm text-white placeholder:text-surface-500 focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
             />
           </div>
 
@@ -179,78 +167,17 @@ export default function AdminTable() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-4">
-        <div>
-          <label
-            htmlFor="filterSize"
-            className="block text-xs font-medium text-surface-400 mb-1"
-          >
-            Porte
-          </label>
-          <select
-            id="filterSize"
-            value={filterSize}
-            onChange={(e) => setFilterSize(e.target.value)}
-            className="rounded-lg border border-surface-600 bg-surface-800 px-3 py-2 text-sm text-white"
-          >
-            <option value="">Todos</option>
-            <option value="startup">Startup</option>
-            <option value="small">Pequena</option>
-            <option value="medium">Média</option>
-            <option value="large">Grande</option>
-            <option value="enterprise">Corporação</option>
-          </select>
-        </div>
-
-        <div>
-          <label
-            htmlFor="dateFrom"
-            className="block text-xs font-medium text-surface-400 mb-1"
-          >
-            De
-          </label>
-          <input
-            id="dateFrom"
-            type="date"
-            value={dateFrom}
-            onChange={(e) => setDateFrom(e.target.value)}
-            className="rounded-lg border border-surface-600 bg-surface-800 px-3 py-2 text-sm text-white"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="dateTo"
-            className="block text-xs font-medium text-surface-400 mb-1"
-          >
-            Até
-          </label>
-          <input
-            id="dateTo"
-            type="date"
-            value={dateTo}
-            onChange={(e) => setDateTo(e.target.value)}
-            className="rounded-lg border border-surface-600 bg-surface-800 px-3 py-2 text-sm text-white"
-          />
-        </div>
-
-        <button
-          onClick={fetchData}
-          className="rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-400 transition-colors"
-        >
-          Filtrar
-        </button>
+      <div className="flex items-center justify-between rounded-xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-4">
+        <span className="text-sm text-surface-400">
+          {data.length} registro(s)
+        </span>
 
         <button
           onClick={handleExport}
-          className="rounded-lg border border-surface-600 px-4 py-2 text-sm font-medium text-surface-300 hover:bg-surface-800 hover:text-white transition-colors"
+          className="rounded-lg bg-gradient-to-r from-brand-500 to-brand-400 px-5 py-2 text-sm font-medium text-white hover:shadow-lg hover:shadow-brand-500/25 transition-all"
         >
-          Exportar CSV
+          Baixar XLSX
         </button>
-
-        <span className="text-xs text-surface-500 ml-auto">
-          {data.length} registro(s)
-        </span>
       </div>
 
       {loading ? (
@@ -292,7 +219,7 @@ export default function AdminTable() {
                 <th className="px-4 py-3 font-medium text-surface-400">Demo</th>
                 <th className="px-4 py-3 font-medium text-surface-400">Tech</th>
                 <th className="px-4 py-3 font-medium text-surface-400">
-                  Detalhe
+                  Detalhe Tech
                 </th>
               </tr>
             </thead>
