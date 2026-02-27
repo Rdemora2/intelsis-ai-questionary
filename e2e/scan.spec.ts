@@ -28,7 +28,9 @@ test.describe("Lead Capture Flow", () => {
 
   test("thank you page loads", async ({ page }) => {
     await page.goto("/thank-you");
-    await expect(page.getByText("Cadastro realizado com sucesso")).toBeVisible();
+    await expect(
+      page.getByText("Cadastro realizado com sucesso"),
+    ).toBeVisible();
     await expect(page.getByText("Conheça-nos")).toBeVisible();
   });
 });

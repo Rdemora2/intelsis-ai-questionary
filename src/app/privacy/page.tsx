@@ -108,9 +108,7 @@ export default function PrivacyPage() {
               </ul>
               <p className="mt-2">
                 Opcionalmente, você pode fornecer uma{" "}
-                <strong className="text-surface-300">
-                  descrição textual
-                </strong>{" "}
+                <strong className="text-surface-300">descrição textual</strong>{" "}
                 de um problema de tecnologia (máx. 500 caracteres) para que
                 possamos oferecer suporte mais direcionado.
               </p>

@@ -82,8 +82,8 @@ export default function HomePage() {
           <div className="space-y-3 mb-8">
             <h1 className="text-3xl font-bold text-white leading-tight sm:text-4xl tracking-tight">
               Cadastre-se no
-              <span className="text-brand-400"> Grupo Intelsis </span>
-              e receba oportunidades SAP
+              <span className="text-brand-400"> Grupo Intelsis </span>e receba
+              oportunidades SAP
             </h1>
 
             <p className="text-surface-400 text-lg leading-relaxed">

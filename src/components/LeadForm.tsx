@@ -3,12 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  SAP_MODULES,
-  COMPANY_SIZES,
-  MOTIVATORS,
-  CHALLENGES,
-} from "@/types";
+import { SAP_MODULES, COMPANY_SIZES, MOTIVATORS, CHALLENGES } from "@/types";
 import type { LeadFormData } from "@/types";
 
 export default function LeadForm() {
@@ -31,7 +26,9 @@ export default function LeadForm() {
   const [consent, setConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof LeadFormData | "consent", string>>>({});
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<keyof LeadFormData | "consent", string>>
+  >({});
 
   const validate = (): boolean => {
     const errs: Partial<Record<keyof LeadFormData | "consent", string>> = {};
@@ -92,7 +89,9 @@ export default function LeadForm() {
       router.push("/thank-you");
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Erro inesperado. Tente novamente.",
+        err instanceof Error
+          ? err.message
+          : "Erro inesperado. Tente novamente.",
       );
     } finally {
       setLoading(false);
@@ -296,7 +295,8 @@ export default function LeadForm() {
               htmlFor="motivator"
               className="block text-sm font-medium text-surface-300 mb-1"
             >
-              Qual é seu principal motivador? <span className="text-red-400">*</span>
+              Qual é seu principal motivador?{" "}
+              <span className="text-red-400">*</span>
             </label>
             <select
               id="motivator"
@@ -413,7 +413,11 @@ export default function LeadForm() {
             type="checkbox"
             checked={formData.techHelp}
             onChange={(e) =>
-              setFormData({ ...formData, techHelp: e.target.checked, techHelpText: e.target.checked ? formData.techHelpText : "" })
+              setFormData({
+                ...formData,
+                techHelp: e.target.checked,
+                techHelpText: e.target.checked ? formData.techHelpText : "",
+              })
             }
             className="mt-0.5 h-5 w-5 rounded border-surface-600 bg-surface-800 text-brand-500 focus:ring-brand-500 focus:ring-offset-surface-900 cursor-pointer flex-shrink-0"
           />

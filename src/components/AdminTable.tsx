@@ -289,12 +289,8 @@ export default function AdminTable() {
                 <th className="px-4 py-3 font-medium text-surface-400">
                   Desafio
                 </th>
-                <th className="px-4 py-3 font-medium text-surface-400">
-                  Demo
-                </th>
-                <th className="px-4 py-3 font-medium text-surface-400">
-                  Tech
-                </th>
+                <th className="px-4 py-3 font-medium text-surface-400">Demo</th>
+                <th className="px-4 py-3 font-medium text-surface-400">Tech</th>
                 <th className="px-4 py-3 font-medium text-surface-400">
                   Detalhe
                 </th>
@@ -344,7 +340,10 @@ export default function AdminTable() {
                       <span className="text-surface-500">—</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-surface-300 max-w-[200px] truncate" title={entry.techHelpText || ""}>
+                  <td
+                    className="px-4 py-3 text-surface-300 max-w-[200px] truncate"
+                    title={entry.techHelpText || ""}
+                  >
                     {entry.techHelpText || "—"}
                   </td>
                 </tr>
